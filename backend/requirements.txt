@@ -1,1 +1,25 @@
+fastapi
+uvicorn[standard]
 
+sqlalchemy
+psycopg2-binary
+alembic
+
+pydantic
+pydantic-settings
+
+python-jose[cryptography]
+passlib[bcrypt]
+
+python-multipart
+
+loguru
+
+pytest
+pytest-asyncio
+
+httpx
+
+qdrant-client
+
+google-generativeai
