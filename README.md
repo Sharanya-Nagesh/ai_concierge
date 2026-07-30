@@ -1,60 +1,82 @@
-# **AI Concierge Platform - Project Overview (Non-Technical)** 
+# AI Concierge Platform – Project Overview (Non-Technical)
 
-This document explains the project in simple language for mentors, classmates, collaborators, and GitHub readers. 
+> **Vision:** Build a smart AI assistant that behaves like a knowledgeable personal assistant rather than a simple chatbot.
 
-## **What is AI Concierge?** 
+## Executive Summary
+AI Concierge is a personalized AI platform that remembers users, understands their documents, communicates naturally in multiple Indian languages (including code-mixed conversations), and assists with learning, planning, productivity, and everyday tasks.
 
-AI Concierge is a smart personal AI assistant that remembers your preferences, understands your documents, supports multilingual and code-mixed conversations, and helps with learning, planning, and everyday tasks. 
+Unlike traditional chatbots that answer one question at a time, AI Concierge builds a long-term relationship with the user by remembering preferences, goals, and previous interactions.
 
-## **The Problem** 
+## The Problem
+- AI assistants forget previous conversations.
+- They cannot answer questions from private documents.
+- Responses are often generic.
+- Users repeat the same context.
+- Natural multilingual conversations are limited.
 
-Current AI assistants often forget user preferences, cannot use private documents effectively, and provide generic responses. 
+## The Solution
+A unified platform combining conversational AI, long-term memory, document understanding (RAG), personalization, multilingual interaction, and intelligent planning.
 
-## **The Solution** 
+## Target Users
+- Students
+- Researchers
+- Professionals
+- Educators
+- Lifelong learners
 
-A single platform that combines intelligent conversation, memory, document understanding, personalization, and planning. 
+## User Journey
+1. Sign up and log in.
+2. Complete your profile.
+3. Upload PDFs or notes.
+4. Chat naturally.
+5. Receive personalized responses.
+6. Continue conversations anytime.
 
-## **User Journey** 
+## Core Features
+### Personalized Chat
+Natural conversations with follow-up understanding.
 
-Sign up, log in, upload documents, chat naturally, receive personalized responses, and continue conversations anytime. 
+### Long-Term Memory
+Remembers preferences, goals, and response style.
 
-## **Main Features** 
+### Multilingual Conversations
+Supports English plus selected Indian languages with code-mixed interactions.
 
-Dashboard, chat, multilingual support, memory, document library, PDF Q&A, recommendations, planner, conversation history, and settings. 
+### Document Library
+Upload and organize study materials.
 
-## **Dashboard** 
+### Document Question Answering
+Summaries, explanations, comparisons, and citations from uploaded files.
 
-Shows recent chats, uploaded documents, recommendations, and quick actions. 
+### Smart Recommendations
+Study plans, revision reminders, and personalized suggestions.
 
-## **Chat** 
+### Planner
+Daily and weekly task planning.
 
-Looks similar to a modern messaging app where users can ask anything naturally. 
+### Conversation History
+Resume previous conversations anytime.
 
-## **Multilingual** 
+### Profile & Settings
+Manage language, memory, personalization, and account preferences.
 
-Supports English along with selected Indian languages and code-mixed conversations. 
+## Example
+A student uploads NLP notes and later asks:
+> Explain attention mechanism ಕನ್ನಡದಲ್ಲಿ.
 
-## **Memory** 
+The assistant remembers the student's interview preparation, retrieves the relevant notes, and explains the topic in Kannada while citing the uploaded document.
 
-Remembers user goals, preferences, and response style to personalize future conversations. 
+## Future Vision
+- Voice assistant
+- Calendar integration
+- Email drafting
+- Image understanding
+- Travel planning
+- Multi-agent workflows
 
-## **Documents** 
+## Project Vision
+Build a production-grade AI assistant demonstrating modern AI engineering while solving real-world productivity and learning problems.
 
-Users upload PDFs and ask questions based on their own content with grounded responses. 
-
-## **Recommendations** 
-
-Suggests study plans, revision schedules, and useful resources. 
-
-## **Future Scope** 
-
-Voice support, calendar integration, image understanding, email assistance, travel planning, and more. 
-
-## **Project Vision** 
-
-Build a production-grade AI assistant showcasing modern AI engineering while solving real user problems. 
-
-## **One-Line Summary** 
-
-AI Concierge is a personalized AI assistant that remembers you, understands your documents, supports multilingual conversations, and helps you learn, plan, and complete everyday tasks through natural conversations. 
+## Elevator Pitch
+AI Concierge is a personalized AI assistant that remembers you, understands your documents, supports multilingual conversations, and helps you learn, plan, and complete everyday tasks through natural conversations.
 
