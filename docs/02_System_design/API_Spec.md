@@ -3439,3 +3439,573 @@ Future improvements may include:
 - Team recommendations
 - Recommendation explainability
 - Reinforcement learning from user feedback
+
+# 17. Health & Monitoring APIs
+
+The Health module provides endpoints for monitoring the availability and operational status of the AI Concierge platform and its dependent services.
+
+---
+
+## 17.1 System Health Check
+
+### Endpoint
+
+```http
+GET /health
+```
+
+### Authentication
+
+❌ Not Required
+
+---
+
+### Description
+
+Returns the overall health status of the backend.
+
+---
+
+### Success Response
+
+```json
+{
+    "status": "healthy",
+    "timestamp": "2026-08-01T14:35:20Z",
+    "version": "1.0.0"
+}
+```
+
+---
+
+## 17.2 Detailed Health Status
+
+### Endpoint
+
+```http
+GET /health/details
+```
+
+### Authentication
+
+✅ Required (Admin)
+
+---
+
+### Success Response
+
+```json
+{
+    "backend": "healthy",
+    "database": "healthy",
+    "vector_database": "healthy",
+    "llm_provider": "healthy",
+    "storage": "healthy",
+    "cache": "healthy"
+}
+```
+
+---
+
+## 17.3 Readiness Probe
+
+### Endpoint
+
+```http
+GET /health/ready
+```
+
+Returns whether the application is ready to receive requests.
+
+---
+
+## 17.4 Liveness Probe
+
+### Endpoint
+
+```http
+GET /health/live
+```
+
+Returns whether the application process is alive.
+
+---
+
+## 17.5 Metrics
+
+### Endpoint
+
+```http
+GET /metrics
+```
+
+Returns Prometheus-compatible metrics.
+
+---
+
+## Health API Summary
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | /health | Basic health check |
+| GET | /health/details | Detailed service health |
+| GET | /health/ready | Kubernetes readiness |
+| GET | /health/live | Kubernetes liveness |
+| GET | /metrics | Prometheus metrics |
+
+---
+
+# 18. API Error Handling
+
+All APIs return errors using a standardized format.
+
+---
+
+## Standard Error Response
+
+```json
+{
+    "success": false,
+    "message": "Validation failed.",
+    "errors": [
+        {
+            "field": "email",
+            "message": "Email already exists."
+        }
+    ]
+}
+```
+
+---
+
+## Common Error Codes
+
+| HTTP Status | Meaning |
+|-------------|----------|
+|200|Success|
+|201|Resource Created|
+|204|No Content|
+|400|Bad Request|
+|401|Unauthorized|
+|403|Forbidden|
+|404|Not Found|
+|409|Conflict|
+|413|Payload Too Large|
+|415|Unsupported Media Type|
+|422|Validation Error|
+|429|Too Many Requests|
+|500|Internal Server Error|
+|503|Service Unavailable|
+
+---
+
+## Business Error Codes
+
+| Code | Description |
+|------|-------------|
+|AUTH_001|Invalid Credentials|
+|AUTH_002|Expired Token|
+|USER_001|User Not Found|
+|DOC_001|Unsupported File|
+|DOC_002|Document Processing Failed|
+|CHAT_001|Conversation Not Found|
+|CHAT_002|Message Too Long|
+|MEM_001|Memory Not Found|
+|PLAN_001|Task Not Found|
+|AGENT_001|Agent Execution Failed|
+|RAG_001|Vector Search Failed|
+
+---
+
+# 19. Pagination
+
+Endpoints returning collections use pagination.
+
+---
+
+## Request
+
+```http
+GET /documents?page=1&limit=20
+```
+
+---
+
+## Response
+
+```json
+{
+    "success": true,
+    "pagination": {
+        "page": 1,
+        "limit": 20,
+        "total_pages": 8,
+        "total_records": 145
+    },
+    "data": []
+}
+```
+
+---
+
+## Pagination Parameters
+
+| Parameter | Default | Maximum |
+|------------|----------|----------|
+| page | 1 | Unlimited |
+| limit | 20 | 100 |
+
+---
+
+# 20. Filtering & Sorting
+
+Many endpoints support filtering.
+
+Example
+
+```http
+GET /planner/tasks?status=completed
+```
+
+Sorting
+
+```http
+GET /documents?sort=uploaded_at&order=desc
+```
+
+---
+
+# 21. Rate Limiting
+
+To prevent abuse, APIs enforce rate limits.
+
+---
+
+## Default Limits
+
+| Endpoint | Limit |
+|-----------|-------|
+| Authentication | 10 requests/minute |
+| Chat | 60 requests/minute |
+| Upload | 20 requests/hour |
+| Planner | 100 requests/hour |
+| Recommendations | 100 requests/hour |
+
+---
+
+### Rate Limit Response
+
+```json
+{
+    "success": false,
+    "message": "Rate limit exceeded."
+}
+```
+
+HTTP Status
+
+```
+429 Too Many Requests
+```
+
+---
+
+# 22. API Versioning
+
+Current version
+
+```
+v1
+```
+
+Base URL
+
+```
+/api/v1/
+```
+
+Future
+
+```
+/api/v2/
+```
+
+Older versions remain supported during migration.
+
+---
+
+# 23. Security
+
+All APIs follow security best practices.
+
+Authentication
+
+- JWT Access Tokens
+
+Authorization
+
+- User-specific data access
+
+Transport
+
+- HTTPS
+
+Passwords
+
+- bcrypt hashing
+
+Secrets
+
+- Environment variables
+
+Validation
+
+- Pydantic models
+
+---
+
+# 24. Streaming APIs
+
+Future versions will support streaming AI responses.
+
+Endpoint
+
+```http
+POST /agents/stream
+```
+
+Technology
+
+- Server-Sent Events (SSE)
+
+Future
+
+- WebSockets
+
+---
+
+## Streaming Flow
+
+```
+User Message
+
+↓
+
+Agent
+
+↓
+
+LLM
+
+↓
+
+Stream Tokens
+
+↓
+
+Frontend
+
+↓
+
+Render Response
+```
+
+---
+
+# 25. OpenAPI Standards
+
+The backend automatically generates documentation.
+
+Available endpoints
+
+```
+/docs
+```
+
+Swagger UI
+
+```
+FastAPI Swagger Interface
+```
+
+Alternative
+
+```
+/redoc
+```
+
+---
+
+# 26. API Lifecycle
+
+```
+Client Request
+
+↓
+
+Authentication
+
+↓
+
+Validation
+
+↓
+
+Business Logic
+
+↓
+
+Database
+
+↓
+
+Vector Search (Optional)
+
+↓
+
+LLM (Optional)
+
+↓
+
+Response Formatting
+
+↓
+
+JSON Response
+```
+
+---
+
+# 27. API Design Principles
+
+The API follows these principles:
+
+- RESTful architecture
+- Stateless communication
+- Consistent response format
+- Predictable endpoints
+- Versioned APIs
+- Secure by default
+- Comprehensive validation
+- Standard HTTP status codes
+
+---
+
+# 28. Future APIs
+
+The following APIs are planned for future releases.
+
+## Notifications
+
+```
+GET /notifications
+POST /notifications
+PATCH /notifications/{id}
+```
+
+---
+
+## Calendar Integration
+
+```
+GET /calendar/events
+POST /calendar/events
+```
+
+---
+
+## Email Integration
+
+```
+POST /email/send
+```
+
+---
+
+## Voice Assistant
+
+```
+POST /voice/transcribe
+POST /voice/synthesize
+```
+
+---
+
+## Code Execution
+
+```
+POST /code/run
+```
+
+---
+
+## External Integrations
+
+```
+Google Calendar
+GitHub
+Notion
+Google Drive
+Microsoft OneDrive
+Slack
+Microsoft Teams
+```
+
+---
+
+# Appendix A – Authentication Header
+
+```http
+Authorization: Bearer <ACCESS_TOKEN>
+```
+
+---
+
+# Appendix B – Standard Success Response
+
+```json
+{
+    "success": true,
+    "message": "Operation completed successfully.",
+    "data": {}
+}
+```
+
+---
+
+# Appendix C – Standard Error Response
+
+```json
+{
+    "success": false,
+    "message": "Validation failed.",
+    "errors": []
+}
+```
+
+---
+
+# Appendix D – API Modules
+
+| Module | Status |
+|----------|--------|
+| Authentication | MVP |
+| Users | MVP |
+| Conversations | MVP |
+| Messages | MVP |
+| Documents | MVP |
+| Memory | MVP |
+| Planner | MVP |
+| Agents | MVP |
+| Recommendations | MVP |
+| Health | MVP |
+| Notifications | Future |
+| Calendar | Future |
+| Voice | Future |
+| Code Execution | Future |
+
+---
+
+# Summary
+
+The AI Concierge REST API provides a secure, scalable, and modular interface for user authentication, conversations, AI-powered messaging, document management, long-term memory, study planning, multi-agent orchestration, personalized recommendations, and system monitoring. Built on RESTful principles with JWT authentication, standardized responses, and versioned endpoints, it is designed to support both the MVP and future enterprise-scale enhancements while maintaining consistency, extensibility, and developer-friendly integration.
