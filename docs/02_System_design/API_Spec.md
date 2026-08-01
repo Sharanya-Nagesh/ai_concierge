@@ -617,3 +617,518 @@ Return Updated Profile
 - User data is always scoped to the authenticated user.
 - Email addresses are globally unique.
 - Future versions may support profile images and additional user settings.
+
+# 10. Conversation APIs
+
+The Conversation module manages chat sessions. A conversation represents a collection of messages exchanged between the user and the AI assistant.
+
+---
+
+## 10.1 Create Conversation
+
+### Endpoint
+
+```http
+POST /conversations
+```
+
+### Description
+
+Creates a new conversation.
+
+### Authentication
+
+✅ Required
+
+### Request Body
+
+```json
+{
+    "title": "Learning Transformers"
+}
+```
+
+### Validation
+
+| Field | Rules |
+|---------|--------|
+| title | Optional, Maximum 200 characters |
+
+If no title is provided, the backend generates one automatically.
+
+### Success Response
+
+**201 Created**
+
+```json
+{
+    "success": true,
+    "message": "Conversation created successfully.",
+    "data": {
+        "id": "conv_01",
+        "title": "Learning Transformers",
+        "created_at": "2026-08-01T14:30:00Z"
+    }
+}
+```
+
+---
+
+## 10.2 List Conversations
+
+### Endpoint
+
+```http
+GET /conversations
+```
+
+### Description
+
+Returns all conversations belonging to the authenticated user.
+
+### Authentication
+
+✅ Required
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|------------|------|-------------|
+| page | Integer | Page number |
+| limit | Integer | Items per page |
+| search | String | Search conversation title |
+
+### Example
+
+```http
+GET /conversations?page=1&limit=20
+```
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": "conv_01",
+            "title": "Learning Transformers",
+            "last_message_at": "2026-08-01T14:45:20Z"
+        },
+        {
+            "id": "conv_02",
+            "title": "Azure AI-900",
+            "last_message_at": "2026-08-01T12:10:50Z"
+        }
+    ]
+}
+```
+
+---
+
+## 10.3 Get Conversation
+
+### Endpoint
+
+```http
+GET /conversations/{conversation_id}
+```
+
+### Authentication
+
+✅ Required
+
+### Description
+
+Returns metadata for a specific conversation.
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "id": "conv_01",
+        "title": "Learning Transformers",
+        "created_at": "2026-08-01T14:30:00Z",
+        "updated_at": "2026-08-01T14:45:20Z"
+    }
+}
+```
+
+---
+
+## 10.4 Rename Conversation
+
+### Endpoint
+
+```http
+PATCH /conversations/{conversation_id}
+```
+
+### Request
+
+```json
+{
+    "title": "Transformer Architecture"
+}
+```
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Conversation renamed successfully."
+}
+```
+
+---
+
+## 10.5 Delete Conversation
+
+### Endpoint
+
+```http
+DELETE /conversations/{conversation_id}
+```
+
+### Description
+
+Deletes the conversation and all associated messages.
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Conversation deleted successfully."
+}
+```
+
+---
+
+## 10.6 Search Conversations
+
+### Endpoint
+
+```http
+GET /conversations/search
+```
+
+### Query Parameters
+
+```
+query=transformers
+```
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": "conv_01",
+            "title": "Learning Transformers"
+        }
+    ]
+}
+```
+
+---
+
+## 10.7 Archive Conversation (Future)
+
+### Endpoint
+
+```http
+PATCH /conversations/{conversation_id}/archive
+```
+
+Archives an old conversation without deleting it.
+
+---
+
+## Conversation API Summary
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | /conversations | Create conversation |
+| GET | /conversations | List conversations |
+| GET | /conversations/{id} | Get conversation |
+| PATCH | /conversations/{id} | Rename conversation |
+| DELETE | /conversations/{id} | Delete conversation |
+| GET | /conversations/search | Search conversations |
+| PATCH | /conversations/{id}/archive | Archive conversation *(Future)* |
+
+# 11. Message APIs
+
+The Message module handles communication between the user and the AI Concierge.
+
+Every message belongs to exactly one conversation.
+
+---
+
+## 11.1 Send Message
+
+### Endpoint
+
+```http
+POST /conversations/{conversation_id}/messages
+```
+
+### Authentication
+
+✅ Required
+
+### Description
+
+Sends a user message to the AI assistant.
+
+### Request
+
+```json
+{
+    "message": "Explain Retrieval-Augmented Generation.",
+    "language": "English"
+}
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "message_id": "msg_123",
+        "conversation_id": "conv_01",
+        "assistant_response": "Retrieval-Augmented Generation (RAG)...",
+        "citations": [
+            {
+                "document": "NLP Notes.pdf",
+                "page": 12
+            }
+        ],
+        "tokens_used": 845,
+        "model": "Gemini"
+    }
+}
+```
+
+---
+
+## 11.2 Stream Message (Future)
+
+### Endpoint
+
+```http
+POST /conversations/{conversation_id}/messages/stream
+```
+
+### Description
+
+Returns AI responses using streaming instead of waiting for the complete answer.
+
+Transport
+
+```
+Server-Sent Events (SSE)
+```
+
+Future
+
+```
+WebSockets
+```
+
+---
+
+## 11.3 Get Messages
+
+### Endpoint
+
+```http
+GET /conversations/{conversation_id}/messages
+```
+
+### Description
+
+Returns every message belonging to a conversation.
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "sender": "user",
+            "content": "Explain RAG."
+        },
+        {
+            "sender": "assistant",
+            "content": "Retrieval-Augmented Generation..."
+        }
+    ]
+}
+```
+
+---
+
+## 11.4 Edit User Message (Future)
+
+### Endpoint
+
+```http
+PATCH /messages/{message_id}
+```
+
+### Description
+
+Allows editing the latest user message before regeneration.
+
+---
+
+### Request
+
+```json
+{
+    "message": "Explain Graph RAG."
+}
+```
+
+---
+
+## 11.5 Regenerate AI Response
+
+### Endpoint
+
+```http
+POST /messages/{message_id}/regenerate
+```
+
+### Description
+
+Generates another answer using the same prompt.
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Response regenerated successfully.",
+    "data": {
+        "assistant_response": "Another explanation..."
+    }
+}
+```
+
+---
+
+## 11.6 Delete Message (Future)
+
+### Endpoint
+
+```http
+DELETE /messages/{message_id}
+```
+
+Deletes a specific message.
+
+---
+
+## 11.7 Give Feedback
+
+### Endpoint
+
+```http
+POST /messages/{message_id}/feedback
+```
+
+### Request
+
+```json
+{
+    "rating": "thumbs_up",
+    "comment": "Very helpful."
+}
+```
+
+Supported ratings
+
+- thumbs_up
+- thumbs_down
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Feedback submitted."
+}
+```
+
+---
+
+## Message API Summary
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | /conversations/{id}/messages | Send message |
+| GET | /conversations/{id}/messages | Get conversation messages |
+| POST | /conversations/{id}/messages/stream | Streaming chat *(Future)* |
+| PATCH | /messages/{id} | Edit message *(Future)* |
+| POST | /messages/{id}/regenerate | Regenerate response |
+| DELETE | /messages/{id} | Delete message *(Future)* |
+| POST | /messages/{id}/feedback | User feedback |
+
+---
+
+## Internal Processing Flow
+
+```
+User Message
+
+↓
+
+Authentication
+
+↓
+
+Conversation Validation
+
+↓
+
+Intent Detection
+
+↓
+
+Memory Retrieval
+
+↓
+
+Document Retrieval (RAG)
+
+↓
+
+Prompt Construction
+
+↓
+
+LLM
+
+↓
+
+Response Validation
+
+↓
+
+Store Messages
+
+↓
+
+Return Response
+```
