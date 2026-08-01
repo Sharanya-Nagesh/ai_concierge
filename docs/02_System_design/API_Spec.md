@@ -1997,3 +1997,1445 @@ LLM Generates Response
 |401|Unauthorized|
 |404|Memory Not Found|
 |500|Internal Server Error|
+
+# 14. Planner APIs
+
+The Planner module enables AI Concierge to create, manage, and track personalized learning plans, project milestones, reminders, and productivity tasks.
+
+The planner combines user goals, AI recommendations, and task management to provide an intelligent study assistant.
+
+---
+
+# 14.1 Create Task
+
+### Endpoint
+
+```http
+POST /planner/tasks
+```
+
+### Authentication
+
+✅ Required
+
+---
+
+### Description
+
+Creates a new planner task.
+
+---
+
+### Request
+
+```json
+{
+    "title": "Complete Azure AI-900 Course",
+    "description": "Finish all modules and practice exams.",
+    "priority": "High",
+    "due_date": "2026-08-30"
+}
+```
+
+---
+
+### Success Response
+
+**201 Created**
+
+```json
+{
+    "success": true,
+    "message": "Task created successfully.",
+    "data": {
+        "task_id": "task_001"
+    }
+}
+```
+
+---
+
+# 14.2 Get All Tasks
+
+### Endpoint
+
+```http
+GET /planner/tasks
+```
+
+### Authentication
+
+✅ Required
+
+---
+
+### Query Parameters
+
+| Parameter | Description |
+|------------|-------------|
+| page | Page number |
+| limit | Items per page |
+| status | Pending / In Progress / Completed |
+| priority | Low / Medium / High |
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "task_id": "task_001",
+            "title": "Complete Azure AI-900",
+            "status": "In Progress",
+            "priority": "High",
+            "due_date": "2026-08-30"
+        }
+    ]
+}
+```
+
+---
+
+# 14.3 Get Task Details
+
+### Endpoint
+
+```http
+GET /planner/tasks/{task_id}
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "task_id": "task_001",
+        "title": "Complete Azure AI-900",
+        "description": "Finish all modules.",
+        "status": "Pending",
+        "priority": "High",
+        "created_at": "2026-08-01T09:00:00Z"
+    }
+}
+```
+
+---
+
+# 14.4 Update Task
+
+### Endpoint
+
+```http
+PATCH /planner/tasks/{task_id}
+```
+
+### Request
+
+```json
+{
+    "title": "Complete AI-900",
+    "priority": "Medium",
+    "due_date": "2026-09-05"
+}
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Task updated successfully."
+}
+```
+
+---
+
+# 14.5 Update Task Status
+
+### Endpoint
+
+```http
+PATCH /planner/tasks/{task_id}/status
+```
+
+### Request
+
+```json
+{
+    "status": "Completed"
+}
+```
+
+---
+
+### Supported Status
+
+- Pending
+- In Progress
+- Completed
+- Cancelled
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Task status updated."
+}
+```
+
+---
+
+# 14.6 Delete Task
+
+### Endpoint
+
+```http
+DELETE /planner/tasks/{task_id}
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Task deleted successfully."
+}
+```
+
+---
+
+# 14.7 AI Generate Study Plan
+
+### Endpoint
+
+```http
+POST /planner/generate
+```
+
+---
+
+### Description
+
+Generates a personalized study roadmap using AI.
+
+---
+
+### Request
+
+```json
+{
+    "goal": "Become an NLP Engineer",
+    "duration_weeks": 16,
+    "hours_per_day": 3
+}
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "roadmap_id": "roadmap_001",
+        "weeks": 16,
+        "estimated_completion": "2026-12-01"
+    }
+}
+```
+
+---
+
+# 14.8 Weekly Planner
+
+### Endpoint
+
+```http
+GET /planner/weekly
+```
+
+---
+
+### Description
+
+Returns tasks grouped by week.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "week": "2026-W31",
+        "tasks": [
+            {
+                "title": "Finish RAG Module",
+                "status": "Pending"
+            }
+        ]
+    }
+}
+```
+
+---
+
+# 14.9 Daily Planner
+
+### Endpoint
+
+```http
+GET /planner/daily
+```
+
+---
+
+### Description
+
+Returns today's scheduled tasks.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "date": "2026-08-01",
+        "tasks": [
+            {
+                "title": "Watch MLOps Lecture",
+                "status": "Pending"
+            }
+        ]
+    }
+}
+```
+
+---
+
+# 14.10 Mark Task Complete
+
+### Endpoint
+
+```http
+POST /planner/tasks/{task_id}/complete
+```
+
+---
+
+### Description
+
+Marks a task as completed.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Congratulations! Task completed."
+}
+```
+
+---
+
+# 14.11 Progress Dashboard
+
+### Endpoint
+
+```http
+GET /planner/progress
+```
+
+---
+
+### Description
+
+Returns learning analytics and productivity statistics.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "completed_tasks": 42,
+        "pending_tasks": 8,
+        "completion_rate": 84,
+        "study_hours": 126,
+        "current_streak": 15
+    }
+}
+```
+
+---
+
+# 14.12 AI Recommendations
+
+### Endpoint
+
+```http
+GET /planner/recommendations
+```
+
+---
+
+### Description
+
+Provides AI-generated recommendations based on planner progress.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "type": "study",
+            "message": "You have been consistent this week. Consider starting the MLOps module."
+        }
+    ]
+}
+```
+
+---
+
+# Planner API Summary
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | /planner/tasks | Create task |
+| GET | /planner/tasks | List tasks |
+| GET | /planner/tasks/{id} | Get task |
+| PATCH | /planner/tasks/{id} | Update task |
+| PATCH | /planner/tasks/{id}/status | Update task status |
+| DELETE | /planner/tasks/{id} | Delete task |
+| POST | /planner/generate | Generate AI roadmap |
+| GET | /planner/daily | Daily planner |
+| GET | /planner/weekly | Weekly planner |
+| POST | /planner/tasks/{id}/complete | Complete task |
+| GET | /planner/progress | Progress dashboard |
+| GET | /planner/recommendations | AI recommendations |
+
+---
+
+# Internal Processing Flow
+
+```text
+User Goal
+
+↓
+
+AI Planner
+
+↓
+
+Roadmap Generation
+
+↓
+
+Weekly Schedule
+
+↓
+
+Daily Tasks
+
+↓
+
+Task Completion
+
+↓
+
+Progress Analysis
+
+↓
+
+AI Feedback
+
+↓
+
+Updated Roadmap
+```
+
+---
+
+# Error Codes
+
+| Status | Meaning |
+|---------|----------|
+|200|Success|
+|201|Task Created|
+|400|Validation Error|
+|401|Unauthorized|
+|404|Task Not Found|
+|500|Internal Server Error|
+
+# 15. Agent APIs
+
+The Agent module manages the orchestration of specialized AI agents responsible for handling different user requests.
+
+Instead of relying on a single LLM prompt, AI Concierge routes requests to specialized agents such as Chat, RAG, Memory, Planner, and Recommendation agents. This modular design improves response quality, scalability, and maintainability.
+
+---
+
+# 15.1 Execute Agent
+
+### Endpoint
+
+```http
+POST /agents/execute
+```
+
+### Authentication
+
+✅ Required
+
+---
+
+### Description
+
+Executes the appropriate AI agent based on the user request.
+
+---
+
+### Request
+
+```json
+{
+    "conversation_id": "conv_001",
+    "message": "Create a 12-week roadmap to learn MLOps."
+}
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "agent": "planner_agent",
+        "response": "Here is your personalized 12-week roadmap...",
+        "execution_time_ms": 2350
+    }
+}
+```
+
+---
+
+# 15.2 Agent Router
+
+### Endpoint
+
+```http
+POST /agents/router
+```
+
+---
+
+### Description
+
+Determines which agent(s) should handle the request.
+
+---
+
+### Example
+
+User Message
+
+```
+Summarize my uploaded NLP notes.
+```
+
+Selected Agent
+
+```
+rag_agent
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "selected_agent": "rag_agent",
+        "confidence": 0.97
+    }
+}
+```
+
+---
+
+# 15.3 List Available Agents
+
+### Endpoint
+
+```http
+GET /agents
+```
+
+---
+
+### Description
+
+Returns all available AI agents.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "name": "chat_agent",
+            "description": "General conversation"
+        },
+        {
+            "name": "rag_agent",
+            "description": "Document-based question answering"
+        },
+        {
+            "name": "memory_agent",
+            "description": "Long-term memory retrieval"
+        },
+        {
+            "name": "planner_agent",
+            "description": "Study planning and task generation"
+        },
+        {
+            "name": "recommendation_agent",
+            "description": "Personalized suggestions"
+        }
+    ]
+}
+```
+
+---
+
+# 15.4 Get Agent Details
+
+### Endpoint
+
+```http
+GET /agents/{agent_name}
+```
+
+---
+
+### Description
+
+Returns metadata about a specific agent.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "name": "rag_agent",
+        "version": "1.0",
+        "status": "active",
+        "supported_tools": [
+            "Vector Search",
+            "Document Parser",
+            "Citation Generator"
+        ]
+    }
+}
+```
+
+---
+
+# 15.5 Agent Execution History
+
+### Endpoint
+
+```http
+GET /agents/history
+```
+
+---
+
+### Description
+
+Returns previous agent executions.
+
+---
+
+### Query Parameters
+
+| Parameter | Description |
+|------------|-------------|
+| page | Page number |
+| limit | Results per page |
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "execution_id": "exec_001",
+            "agent": "planner_agent",
+            "status": "completed",
+            "execution_time_ms": 2310,
+            "created_at": "2026-08-01T10:00:00Z"
+        }
+    ]
+}
+```
+
+---
+
+# 15.6 Retry Agent Execution
+
+### Endpoint
+
+```http
+POST /agents/history/{execution_id}/retry
+```
+
+---
+
+### Description
+
+Retries a previous agent execution.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Execution restarted."
+}
+```
+
+---
+
+# 15.7 Streaming Agent Response
+
+### Endpoint
+
+```http
+POST /agents/stream
+```
+
+---
+
+### Description
+
+Streams responses from the selected agent.
+
+---
+
+### Transport
+
+```
+Server-Sent Events (SSE)
+```
+
+Future
+
+```
+WebSockets
+```
+
+---
+
+# 15.8 Multi-Agent Workflow
+
+### Endpoint
+
+```http
+POST /agents/workflow
+```
+
+---
+
+### Description
+
+Executes multiple agents sequentially or in parallel.
+
+---
+
+### Request
+
+```json
+{
+    "conversation_id": "conv_001",
+    "message": "Create a study plan based on my uploaded ML notes."
+}
+```
+
+---
+
+### Example Workflow
+
+```
+Router Agent
+
+↓
+
+Memory Agent
+
+↓
+
+RAG Agent
+
+↓
+
+Planner Agent
+
+↓
+
+Recommendation Agent
+
+↓
+
+Response Generator
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "agents_used": [
+            "memory_agent",
+            "rag_agent",
+            "planner_agent"
+        ],
+        "response": "Based on your uploaded notes, here is your personalized study plan..."
+    }
+}
+```
+
+---
+
+# 15.9 Agent Health Check
+
+### Endpoint
+
+```http
+GET /agents/health
+```
+
+---
+
+### Description
+
+Returns the health status of all registered agents.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "agent": "chat_agent",
+            "status": "healthy"
+        },
+        {
+            "agent": "rag_agent",
+            "status": "healthy"
+        },
+        {
+            "agent": "planner_agent",
+            "status": "healthy"
+        }
+    ]
+}
+```
+
+---
+
+# Supported Agents
+
+| Agent | Responsibility |
+|---------|----------------|
+| chat_agent | General conversations |
+| router_agent | Intent classification and routing |
+| rag_agent | Retrieval-Augmented Generation |
+| memory_agent | Long-term memory retrieval |
+| planner_agent | Study plans and task generation |
+| recommendation_agent | Personalized recommendations |
+
+---
+
+# Agent Routing Logic
+
+```text
+User Request
+
+↓
+
+Authentication
+
+↓
+
+Router Agent
+
+↓
+
+Intent Detection
+
+↓
+
+Memory Retrieval
+
+↓
+
+Document Retrieval
+
+↓
+
+Planner (if needed)
+
+↓
+
+Recommendation (if needed)
+
+↓
+
+LLM Response
+
+↓
+
+Store Conversation
+
+↓
+
+Return Response
+```
+
+---
+
+# Agent Execution Lifecycle
+
+```text
+Receive Request
+
+↓
+
+Validate JWT
+
+↓
+
+Identify Intent
+
+↓
+
+Select Agent
+
+↓
+
+Execute Tools
+
+↓
+
+Collect Context
+
+↓
+
+Construct Prompt
+
+↓
+
+Call LLM
+
+↓
+
+Validate Output
+
+↓
+
+Store Response
+
+↓
+
+Return Result
+```
+
+---
+
+# Agent API Summary
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | /agents/execute | Execute an agent |
+| POST | /agents/router | Route request to agent |
+| GET | /agents | List available agents |
+| GET | /agents/{agent_name} | Get agent details |
+| GET | /agents/history | Execution history |
+| POST | /agents/history/{id}/retry | Retry execution |
+| POST | /agents/stream | Stream responses |
+| POST | /agents/workflow | Execute multi-agent workflow |
+| GET | /agents/health | Agent health status |
+
+---
+
+# Error Codes
+
+| Status | Meaning |
+|---------|----------|
+|200|Success|
+|400|Invalid Request|
+|401|Unauthorized|
+|404|Agent Not Found|
+|409|Workflow Conflict|
+|500|Agent Execution Failed|
+|503|Agent Temporarily Unavailable|
+
+---
+
+# Future Enhancements
+
+Future versions of the Agent module may include:
+
+- Dynamic agent registration
+- Agent marketplace
+- Tool discovery
+- Parallel workflow execution
+- Human-in-the-loop approvals
+- Cost-aware agent selection
+- Agent performance analytics
+- Automatic workflow optimization
+
+# 16. Recommendation APIs
+
+The Recommendation module generates personalized suggestions based on user behavior, learning progress, long-term memory, uploaded documents, planner tasks, and conversation history.
+
+Unlike standard chat responses, recommendations are proactive and personalized.
+
+---
+
+# 16.1 Get Personalized Recommendations
+
+### Endpoint
+
+```http
+GET /recommendations
+```
+
+### Authentication
+
+✅ Required
+
+---
+
+### Description
+
+Returns personalized recommendations for the authenticated user.
+
+---
+
+### Query Parameters
+
+| Parameter | Description |
+|------------|-------------|
+| category | Optional recommendation category |
+| limit | Maximum number of recommendations |
+
+---
+
+### Example
+
+```http
+GET /recommendations?category=learning&limit=5
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "recommendation_id": "rec_001",
+            "category": "learning",
+            "title": "Study Attention Mechanism",
+            "description": "Based on your recent conversations, this topic will strengthen your understanding of Transformers.",
+            "priority": "High",
+            "confidence": 0.94
+        }
+    ]
+}
+```
+
+---
+
+# 16.2 Get Learning Recommendations
+
+### Endpoint
+
+```http
+GET /recommendations/learning
+```
+
+---
+
+### Description
+
+Returns AI-generated learning suggestions.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "title": "Complete Azure AI-900",
+            "reason": "You have already completed 75% of the syllabus."
+        },
+        {
+            "title": "Start MLOps",
+            "reason": "Recommended after AI-900."
+        }
+    ]
+}
+```
+
+---
+
+# 16.3 Get Project Recommendations
+
+### Endpoint
+
+```http
+GET /recommendations/projects
+```
+
+---
+
+### Description
+
+Suggests projects based on the user's interests, skills, and learning progress.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "title": "Build a Medical RAG Assistant",
+            "difficulty": "Intermediate",
+            "estimated_duration": "4 weeks"
+        }
+    ]
+}
+```
+
+---
+
+# 16.4 Get Resource Recommendations
+
+### Endpoint
+
+```http
+GET /recommendations/resources
+```
+
+---
+
+### Description
+
+Returns recommended learning resources.
+
+---
+
+### Query Parameters
+
+| Parameter | Description |
+|------------|-------------|
+| topic | Learning topic |
+
+---
+
+### Example
+
+```http
+GET /recommendations/resources?topic=RAG
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "title": "Attention Is All You Need",
+            "type": "Research Paper"
+        },
+        {
+            "title": "LangChain Documentation",
+            "type": "Documentation"
+        }
+    ]
+}
+```
+
+---
+
+# 16.5 Get Daily Recommendations
+
+### Endpoint
+
+```http
+GET /recommendations/daily
+```
+
+---
+
+### Description
+
+Returns personalized recommendations for the current day.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "tasks": [
+            "Complete today's MLOps lesson",
+            "Review yesterday's planner tasks",
+            "Revise Transformer architecture"
+        ]
+    }
+}
+```
+
+---
+
+# 16.6 Dismiss Recommendation
+
+### Endpoint
+
+```http
+PATCH /recommendations/{recommendation_id}/dismiss
+```
+
+---
+
+### Description
+
+Marks a recommendation as dismissed.
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Recommendation dismissed."
+}
+```
+
+---
+
+# 16.7 Feedback on Recommendation
+
+### Endpoint
+
+```http
+POST /recommendations/{recommendation_id}/feedback
+```
+
+---
+
+### Description
+
+Collects user feedback to improve recommendation quality.
+
+---
+
+### Request
+
+```json
+{
+    "rating": 5,
+    "helpful": true,
+    "comment": "This recommendation was very useful."
+}
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Feedback received."
+}
+```
+
+---
+
+# Recommendation Categories
+
+Supported categories include:
+
+- Learning
+- Projects
+- Certifications
+- Study Plans
+- Books
+- Courses
+- Research Papers
+- Productivity
+- Career
+- Skills
+
+---
+
+# Recommendation Generation Pipeline
+
+```text
+User Activity
+
+↓
+
+Conversation History
+
+↓
+
+Long-Term Memory
+
+↓
+
+Planner Progress
+
+↓
+
+Uploaded Documents
+
+↓
+
+Recommendation Engine
+
+↓
+
+Ranking Algorithm
+
+↓
+
+Top Recommendations
+
+↓
+
+User Dashboard
+```
+
+---
+
+# Recommendation Ranking Factors
+
+Recommendations are ranked using multiple signals:
+
+| Factor | Description |
+|---------|-------------|
+| User Goals | Career and learning goals |
+| Memory | Stored long-term preferences |
+| Planner | Current task progress |
+| Conversation History | Recently discussed topics |
+| Uploaded Documents | Available study material |
+| Feedback Score | Previous user ratings |
+| Recency | Recent interactions |
+| Priority | AI-assigned importance |
+
+---
+
+# Recommendation API Summary
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | /recommendations | Personalized recommendations |
+| GET | /recommendations/learning | Learning recommendations |
+| GET | /recommendations/projects | Project ideas |
+| GET | /recommendations/resources | Learning resources |
+| GET | /recommendations/daily | Daily recommendations |
+| PATCH | /recommendations/{id}/dismiss | Dismiss recommendation |
+| POST | /recommendations/{id}/feedback | Submit recommendation feedback |
+
+---
+
+# Error Codes
+
+| Status | Meaning |
+|---------|----------|
+|200|Success|
+|400|Invalid Request|
+|401|Unauthorized|
+|404|Recommendation Not Found|
+|500|Internal Server Error|
+
+---
+
+# Future Enhancements
+
+Future improvements may include:
+
+- Real-time recommendations
+- Collaborative filtering
+- Personalized course sequencing
+- Calendar-aware recommendations
+- Deadline-aware recommendations
+- Team recommendations
+- Recommendation explainability
+- Reinforcement learning from user feedback
