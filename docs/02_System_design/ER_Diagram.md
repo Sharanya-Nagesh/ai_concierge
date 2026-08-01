@@ -1,282 +1,528 @@
-# AI Concierge - Entity Relationship (ER) Diagram
+# ER Diagram
 
-## Purpose
+> **Project:** AI Concierge – Personalized AI Assistant
 
-This document defines the relational database structure for the AI Concierge platform.
+> **Document Version:** 1.0
+
+> **Status:** Draft
 
 ---
 
-# High-Level ER Diagram
+# 1. Purpose
 
-```text
-User
- │
- ├── UserPreference
- │
- ├── Session
- │      │
- │      └── Conversation
- │              │
- │              └── Message
- │
- ├── Document
- │      │
- │      └── DocumentChunk
- │
- ├── Feedback
- │
- └── AuditLog
+This document describes the Entity Relationship (ER) model of AI Concierge.
+
+It defines:
+
+- Database entities
+- Relationships
+- Cardinalities
+- Primary Keys
+- Foreign Keys
+- Data ownership
+- Normalization strategy
+
+The ER model provides a visual representation of how relational data is organized in PostgreSQL.
+
+---
+
+# 2. Database Overview
+
+AI Concierge uses a hybrid storage architecture.
+
+```
+                AI Concierge
+
+                      │
+
+        ┌─────────────┴─────────────┐
+
+        ▼                           ▼
+
+ PostgreSQL                   Qdrant
+
+(Relational)             (Vector Database)
+
+        │                           │
+
+  Structured Data            Embeddings
+```
+
+This document covers **only PostgreSQL relationships**.
+
+---
+
+# 3. Main Entities
+
+The MVP consists of the following entities:
+
+- Users
+- User Preferences
+- Conversations
+- Messages
+- Memories
+- Documents
+- Planner Tasks
+- Audit Logs
+
+---
+
+# 4. High-Level ER Diagram
+
+```mermaid
+erDiagram
+
+    USERS ||--|| USER_PREFERENCES : has
+    USERS ||--o{ CONVERSATIONS : owns
+    USERS ||--o{ DOCUMENTS : uploads
+    USERS ||--o{ MEMORIES : stores
+    USERS ||--o{ PLANNER_TASKS : creates
+    USERS ||--o{ AUDIT_LOGS : generates
+
+    CONVERSATIONS ||--o{ MESSAGES : contains
 ```
 
 ---
 
-# Entity Definitions
+# 5. Detailed ER Diagram
 
-## User
+```mermaid
+erDiagram
 
-Stores account information.
+    USERS {
+        UUID id PK
+        string full_name
+        string email
+        string password_hash
+        string role
+        datetime created_at
+        datetime updated_at
+    }
 
-| Field         | Type      | Description        |
-| ------------- | --------- | ------------------ |
-| id            | UUID      | Primary Key        |
-| username      | VARCHAR   | Unique username    |
-| email         | VARCHAR   | Unique email       |
-| password_hash | VARCHAR   | Encrypted password |
-| created_at    | TIMESTAMP | Account creation   |
-| updated_at    | TIMESTAMP | Last modification  |
+    USER_PREFERENCES {
+        UUID id PK
+        UUID user_id FK
+        string preferred_language
+        string response_style
+        string theme
+        string timezone
+    }
+
+    CONVERSATIONS {
+        UUID id PK
+        UUID user_id FK
+        string title
+        datetime created_at
+        datetime updated_at
+    }
+
+    MESSAGES {
+        UUID id PK
+        UUID conversation_id FK
+        string sender
+        text content
+        string model_name
+        int tokens_used
+        datetime created_at
+    }
+
+    MEMORIES {
+        UUID id PK
+        UUID user_id FK
+        string category
+        text memory_text
+        float importance_score
+        datetime created_at
+    }
+
+    DOCUMENTS {
+        UUID id PK
+        UUID user_id FK
+        string filename
+        string original_filename
+        bigint file_size
+        string mime_type
+        string upload_status
+        string storage_path
+        datetime uploaded_at
+    }
+
+    PLANNER_TASKS {
+        UUID id PK
+        UUID user_id FK
+        string title
+        string description
+        string priority
+        string status
+        date due_date
+    }
+
+    AUDIT_LOGS {
+        UUID id PK
+        UUID user_id FK
+        string action
+        string entity
+        UUID entity_id
+        datetime created_at
+    }
+
+    USERS ||--|| USER_PREFERENCES : has
+
+    USERS ||--o{ CONVERSATIONS : owns
+
+    USERS ||--o{ DOCUMENTS : uploads
+
+    USERS ||--o{ MEMORIES : stores
+
+    USERS ||--o{ PLANNER_TASKS : creates
+
+    USERS ||--o{ AUDIT_LOGS : generates
+
+    CONVERSATIONS ||--o{ MESSAGES : contains
+```
+
+---
+
+# 6. Relationship Explanation
+
+## Users ↔ User Preferences
 
 Relationship:
 
-```text
-User
-├── UserPreference
-├── Session
-├── Document
-├── Feedback
-└── AuditLog
+```
+One-to-One
 ```
 
----
-
-## UserPreference
-
-Stores personalization settings.
-
-| Field            | Type      |
-| ---------------- | --------- |
-| id               | UUID      |
-| user_id          | UUID FK   |
-| response_style   | VARCHAR   |
-| interests        | JSONB     |
-| budget           | VARCHAR   |
-| food_preferences | VARCHAR   |
-| created_at       | TIMESTAMP |
+Each user owns exactly one preference profile.
 
 Example:
 
-```json
-{
-  "response_style":"detailed",
-  "interests":["AI","Research"],
-  "budget":"medium"
-}
+```
+Sharanya
+
+↓
+
+Preferred Language = English
+
+↓
+
+Theme = Dark
+
+↓
+
+Response Style = Detailed
 ```
 
 ---
 
-## Session
+## Users ↔ Conversations
 
-Represents a login session.
+Relationship
 
-| Field      | Type      |
-| ---------- | --------- |
-| id         | UUID      |
-| user_id    | UUID FK   |
-| created_at | TIMESTAMP |
-| expires_at | TIMESTAMP |
+```
+One-to-Many
+```
 
-Relationship:
+One user may have multiple conversations.
 
-```text
-User 1 ---- N Session
+Example
+
+```
+Sharanya
+
+├── NLP Discussion
+
+├── Azure AI-900
+
+├── AI Concierge Project
 ```
 
 ---
 
-## Conversation
+## Conversations ↔ Messages
 
-Stores chat threads.
+Relationship
 
-| Field      | Type      |
-| ---------- | --------- |
-| id         | UUID      |
-| session_id | UUID FK   |
-| title      | VARCHAR   |
-| created_at | TIMESTAMP |
+```
+One-to-Many
+```
 
-Relationship:
+Each conversation contains multiple messages.
 
-```text
-Session 1 ---- N Conversation
+```
+Conversation
+
+↓
+
+Message 1
+
+↓
+
+Message 2
+
+↓
+
+Message 3
 ```
 
 ---
 
-## Message
+## Users ↔ Documents
 
-Stores chat messages.
+Relationship
 
-| Field           | Type      |
-| --------------- | --------- |
-| id              | UUID      |
-| conversation_id | UUID FK   |
-| role            | VARCHAR   |
-| content         | TEXT      |
-| timestamp       | TIMESTAMP |
-
-Roles:
-
-```text
-user
-assistant
-system
-tool
+```
+One-to-Many
 ```
 
-Relationship:
+Each uploaded document belongs to exactly one user.
 
-```text
-Conversation 1 ---- N Message
 ```
+User
 
----
+↓
 
-## Document
+PDF 1
 
-Stores uploaded files.
+↓
 
-| Field       | Type      |
-| ----------- | --------- |
-| id          | UUID      |
-| user_id     | UUID FK   |
-| filename    | VARCHAR   |
-| file_path   | VARCHAR   |
-| upload_date | TIMESTAMP |
+PDF 2
 
-Relationship:
+↓
 
-```text
-User 1 ---- N Document
+PDF 3
 ```
 
 ---
 
-## DocumentChunk
+## Users ↔ Memories
 
-Stores chunk metadata.
+Relationship
 
-| Field       | Type    |
-| ----------- | ------- |
-| id          | UUID    |
-| document_id | UUID FK |
-| chunk_index | INTEGER |
-| chunk_text  | TEXT    |
-| vector_id   | VARCHAR |
-
-Relationship:
-
-```text
-Document 1 ---- N DocumentChunk
+```
+One-to-Many
 ```
 
-Note:
+Users accumulate many memories over time.
 
-Actual embeddings reside in Qdrant.
+Examples
+
+- Career Goal
+
+- Learning Style
+
+- Preferred Language
+
+- Interests
 
 ---
 
-## Feedback
+## Users ↔ Planner Tasks
 
-Stores user ratings.
+Relationship
 
-| Field      | Type    |
-| ---------- | ------- |
-| id         | UUID    |
-| user_id    | UUID FK |
-| message_id | UUID FK |
-| rating     | INTEGER |
-| comment    | TEXT    |
-
-Values:
-
-```text
-1–5
 ```
+One-to-Many
+```
+
+Each planner task belongs to one user.
 
 ---
 
-## AuditLog
+## Users ↔ Audit Logs
 
-Tracks important events.
+Relationship
 
-| Field     | Type      |
-| --------- | --------- |
-| id        | UUID      |
-| user_id   | UUID FK   |
-| action    | VARCHAR   |
-| timestamp | TIMESTAMP |
+```
+One-to-Many
+```
+
+Every important action performed by the user creates an audit log.
 
 Examples:
 
+- Login
+- Logout
+- Upload PDF
+- Delete Conversation
+
+---
+
+# 7. Primary Keys
+
+| Table | Primary Key |
+|---------|-------------|
+| Users | id |
+| User Preferences | id |
+| Conversations | id |
+| Messages | id |
+| Memories | id |
+| Documents | id |
+| Planner Tasks | id |
+| Audit Logs | id |
+
+All primary keys use UUIDs.
+
+---
+
+# 8. Foreign Keys
+
+| Table | Foreign Key | References |
+|---------|-------------|------------|
+| user_preferences | user_id | users.id |
+| conversations | user_id | users.id |
+| documents | user_id | users.id |
+| memories | user_id | users.id |
+| planner_tasks | user_id | users.id |
+| audit_logs | user_id | users.id |
+| messages | conversation_id | conversations.id |
+
+---
+
+# 9. Cardinality Summary
+
+| Relationship | Cardinality |
+|--------------|-------------|
+| User → Preferences | 1 : 1 |
+| User → Conversations | 1 : N |
+| User → Documents | 1 : N |
+| User → Memories | 1 : N |
+| User → Planner Tasks | 1 : N |
+| User → Audit Logs | 1 : N |
+| Conversation → Messages | 1 : N |
+
+---
+
+# 10. Data Ownership
+
+Ownership rules ensure proper authorization.
+
+| Entity | Owner |
+|----------|-------|
+| Preferences | User |
+| Conversations | User |
+| Messages | Conversation Owner |
+| Documents | User |
+| Memories | User |
+| Planner Tasks | User |
+| Audit Logs | User |
+
+Every query must be scoped to the authenticated user's ID.
+
+---
+
+# 11. Referential Integrity
+
+The database enforces referential integrity using foreign key constraints.
+
+Examples:
+
+- A message cannot exist without a conversation.
+- A conversation cannot exist without a user.
+- A memory cannot exist without a user.
+- A planner task cannot exist without a user.
+
+---
+
+# 12. Cascade Behavior
+
+Recommended cascade rules:
+
+| Parent | Child | On Delete |
+|----------|--------|-----------|
+| User | Preferences | CASCADE |
+| User | Conversations | CASCADE |
+| User | Documents | CASCADE |
+| User | Memories | CASCADE |
+| User | Planner Tasks | CASCADE |
+| User | Audit Logs | CASCADE |
+| Conversation | Messages | CASCADE |
+
+Deleting a user removes all associated records.
+
+---
+
+# 13. Normalization
+
+The relational schema follows **Third Normal Form (3NF)**.
+
+Benefits:
+
+- Eliminates redundant data
+- Prevents update anomalies
+- Simplifies maintenance
+- Ensures consistency
+
+---
+
+# 14. Future Entities
+
+The following tables are planned for future releases:
+
+| Table | Purpose |
+|---------|---------|
+| rag_chunks | Chunk metadata |
+| llm_requests | Token usage & cost tracking |
+| feedback | User ratings |
+| recommendations | Personalized suggestions |
+| notifications | Reminder system |
+| user_sessions | Refresh tokens |
+| prompt_templates | Prompt management |
+| agent_runs | Agent execution logs |
+| conversation_summaries | Long-context optimization |
+
+These entities are intentionally excluded from the MVP to keep the initial implementation manageable.
+
+---
+
+# 15. Future ER Diagram (Conceptual)
+
 ```text
-LOGIN
-UPLOAD_DOCUMENT
-DELETE_DOCUMENT
-UPDATE_PROFILE
+Users
+
+│
+
+├── Preferences
+
+├── Conversations
+
+│      ├── Messages
+
+│      └── Conversation Summary
+
+├── Documents
+
+│      └── RAG Chunks
+
+├── Memories
+
+├── Planner
+
+├── Recommendations
+
+├── Notifications
+
+├── Sessions
+
+└── Audit Logs
 ```
 
 ---
 
-# Future Entities
+# 16. Design Principles
 
-## Recommendation
+The database design follows these principles:
 
-Stores generated recommendations.
-
-## AgentTrace
-
-Stores execution traces from agents.
-
-## ToolUsage
-
-Stores tool invocation metrics.
-
-## Analytics
-
-Stores user activity summaries.
+- One source of truth for each entity
+- UUID-based primary keys
+- Explicit foreign key relationships
+- Normalized relational schema
+- Clear ownership boundaries
+- Separation of relational and vector data
+- Easy extensibility
 
 ---
 
-# Database Strategy
+# 17. Summary
 
-Relational Data:
-
-* PostgreSQL
-
-Vector Data:
-
-* Qdrant
-
-Cache (Future):
-
-* Redis
-
----
-
-# Design Principles
-
-* UUID-based primary keys
-* Soft-delete support
-* Auditability
-* Scalability
-* Separation of relational and vector storage
+The AI Concierge relational database is centered around the **User** entity. Every major feature—conversations, documents, memories, planner tasks, and preferences—is associated with a specific user, ensuring secure data ownership and straightforward authorization. Combined with Qdrant for semantic embeddings, this ER model forms the foundation of a scalable, production-ready AI platform.
