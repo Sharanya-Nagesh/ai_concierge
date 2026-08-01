@@ -30,8 +30,71 @@ ai-concierge/
 ```
 
 ---
+# docs structure
+```text
+docs/
+
+├── product/
+│   ├── PRD.md
+│   ├── Project_Overview.md
+│   ├── Vision.md
+│   ├── User_Personas.md
+│   ├── User_Stories.md
+│   ├── Functional_Requirements.md
+│   ├── Non_Functional_Requirements.md
+│   ├── Feature_Walkthrough.md
+│   └── UI_Walkthrough.md
+│
+├── system_design/
+│   ├── Technology_Stack.md
+│   ├── System_Architecture.md
+│   ├── Frontend_Architecture.md
+│   ├── Backend_Architecture.md
+│   ├── Authentication.md
+│   ├── Database_Design.md
+│   ├── ER_Diagram.md
+│   ├── API_Spec.md
+│   ├── Memory_Architecture.md
+│   ├── Agent_Design.md
+│   ├── RAG_Design.md
+│   ├── Security.md
+│   ├── Deployment.md
+│   ├── Testing.md
+│   ├── Monitoring.md
+│   ├── Evaluation.md
+│   └── Decision_Log.md
+│
+├── development/
+│   ├── Folder_Structure.md
+│   ├── Coding_Standards.md
+│   ├── Git_Workflow.md
+│   ├── Environment_Setup.md
+│   ├── Local_Development.md
+│   ├── Deployment_Guide.md
+│   └── Troubleshooting.md
+│
+├── mlops/
+│   ├── MLOps_Pipeline.md
+│   ├── LLMOps.md
+│   ├── CI_CD.md
+│   ├── Model_Versioning.md
+│   ├── Prompt_Versioning.md
+│   ├── Monitoring_AI.md
+│   └── Evaluation_Framework.md
+│
+├── diagrams/
+│   ├── system_architecture.png
+│   ├── er_diagram.png
+│   ├── backend_flow.png
+│   ├── rag_pipeline.png
+│   ├── memory_pipeline.png
+│   └── ui_wireframes.png
+│
+└── README.md
+```
 
 # Backend Structure
+
 
 ```text
 backend/
