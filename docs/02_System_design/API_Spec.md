@@ -189,3 +189,431 @@ Content-Type: application/json
 # 8. Authentication APIs
 
 The Authentication module manages user registration, login, logout, and account security.
+# 9. User APIs
+
+The User module manages profile information and personalization settings.
+
+---
+
+## 9.1 Get Current User Profile
+
+### Endpoint
+
+```http
+GET /users/me
+```
+
+---
+
+### Description
+
+Returns the authenticated user's profile.
+
+---
+
+### Authentication
+
+✅ Required
+
+---
+
+### Headers
+
+```http
+Authorization: Bearer <ACCESS_TOKEN>
+```
+
+---
+
+### Request Body
+
+None
+
+---
+
+### Success Response
+
+**200 OK**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "b2f79c9d-45e7-41c1-8db6-37f4b9d8f98e",
+    "full_name": "Sharanya N",
+    "email": "sharanya@example.com",
+    "role": "user",
+    "created_at": "2026-07-22T10:15:20Z"
+  }
+}
+```
+
+---
+
+### Error Responses
+
+```json
+{
+    "success": false,
+    "message": "Unauthorized."
+}
+```
+
+Status Code
+
+```
+401 Unauthorized
+```
+
+---
+
+## 9.2 Update User Profile
+
+### Endpoint
+
+```http
+PATCH /users/me
+```
+
+---
+
+### Description
+
+Updates editable user profile fields.
+
+---
+
+### Authentication
+
+✅ Required
+
+---
+
+### Request Body
+
+```json
+{
+    "full_name": "Sharanya N",
+    "email": "sharanya@example.com"
+}
+```
+
+---
+
+### Validation Rules
+
+| Field | Validation |
+|---------|------------|
+| full_name | 2–100 characters |
+| email | Valid email |
+| email | Must be unique |
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Profile updated successfully.",
+    "data": {
+        "full_name": "Sharanya N",
+        "email": "sharanya@example.com"
+    }
+}
+```
+
+---
+
+## 9.3 Delete User Account
+
+### Endpoint
+
+```http
+DELETE /users/me
+```
+
+---
+
+### Description
+
+Deletes the authenticated user's account and all associated data.
+
+---
+
+### Authentication
+
+✅ Required
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Account deleted successfully."
+}
+```
+
+---
+
+### Notes
+
+Deleting a user also removes:
+
+- Conversations
+- Messages
+- Uploaded Documents
+- Memories
+- Planner Tasks
+- User Preferences
+
+This is implemented using database cascade deletion.
+
+---
+
+## 9.4 Get User Preferences
+
+### Endpoint
+
+```http
+GET /users/preferences
+```
+
+---
+
+### Description
+
+Returns personalization settings.
+
+---
+
+### Authentication
+
+✅ Required
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "data": {
+        "preferred_language": "English",
+        "response_style": "Detailed",
+        "theme": "Dark",
+        "timezone": "Asia/Kolkata"
+    }
+}
+```
+
+---
+
+## 9.5 Update User Preferences
+
+### Endpoint
+
+```http
+PATCH /users/preferences
+```
+
+---
+
+### Authentication
+
+✅ Required
+
+---
+
+### Request Body
+
+```json
+{
+    "preferred_language": "Hindi",
+    "response_style": "Concise",
+    "theme": "Light",
+    "timezone": "Asia/Kolkata"
+}
+```
+
+---
+
+### Request Fields
+
+| Field | Description |
+|---------|-------------|
+| preferred_language | Preferred interaction language |
+| response_style | Concise / Detailed |
+| theme | Light / Dark / System |
+| timezone | User timezone |
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Preferences updated successfully."
+}
+```
+
+---
+
+## 9.6 Upload Profile Picture (Future)
+
+### Endpoint
+
+```http
+POST /users/avatar
+```
+
+---
+
+### Authentication
+
+✅ Required
+
+---
+
+### Content-Type
+
+```
+multipart/form-data
+```
+
+---
+
+### Request
+
+```
+avatar=<image_file>
+```
+
+Supported formats
+
+- PNG
+- JPG
+- JPEG
+- WEBP
+
+Maximum size
+
+```
+5 MB
+```
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Profile picture uploaded successfully.",
+    "data": {
+        "avatar_url": "/uploads/avatar/user123.png"
+    }
+}
+```
+
+---
+
+## 9.7 Delete Profile Picture (Future)
+
+### Endpoint
+
+```http
+DELETE /users/avatar
+```
+
+---
+
+### Authentication
+
+✅ Required
+
+---
+
+### Success Response
+
+```json
+{
+    "success": true,
+    "message": "Profile picture removed."
+}
+```
+
+---
+
+# User API Summary
+
+| Method | Endpoint | Description |
+|----------|-------------------------|------------------------------|
+| GET | /users/me | Get current user |
+| PATCH | /users/me | Update profile |
+| DELETE | /users/me | Delete account |
+| GET | /users/preferences | Get preferences |
+| PATCH | /users/preferences | Update preferences |
+| POST | /users/avatar | Upload avatar *(Future)* |
+| DELETE | /users/avatar | Delete avatar *(Future)* |
+
+---
+
+# User API Flow
+
+```text
+User
+
+↓
+
+Login
+
+↓
+
+GET /users/me
+
+↓
+
+Display Profile
+
+↓
+
+Edit Profile
+
+↓
+
+PATCH /users/me
+
+↓
+
+Update Database
+
+↓
+
+Return Updated Profile
+```
+
+---
+
+# Error Codes
+
+| Status | Meaning |
+|---------|----------|
+|200|Success|
+|400|Validation Error|
+|401|Unauthorized|
+|404|User Not Found|
+|409|Email Already Exists|
+|500|Internal Server Error|
+
+---
+
+# Notes
+
+- Every endpoint requires a valid JWT except registration and login.
+- User data is always scoped to the authenticated user.
+- Email addresses are globally unique.
+- Future versions may support profile images and additional user settings.
