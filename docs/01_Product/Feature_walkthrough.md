@@ -128,13 +128,13 @@ It displays:
 
 Example:
 
-Good Evening, Sharanya!
+Good Evening, XYZ!
 
 Continue:
 
-- NLP Interview Preparation
+- Cyber security Interview Preparation
 - Deep Learning Revision
-- AI Concierge Project
+- Recent research papers in Psychology
 
 Suggested Actions:
 
@@ -168,7 +168,7 @@ The conversation continues just like chatting with a human assistant.
 
 The user asks:
 
-"Explain Self-Attention."
+"Explain Obsessive-Compulsive Disorder."
 
 Immediately after:
 
@@ -188,7 +188,7 @@ Example:
 
 User:
 
-"I'm preparing for Azure AI-900."
+"I'm preparing for Azure Course."
 
 Later...
 
@@ -273,19 +273,19 @@ Example:
 
 User:
 
-> Explain CNN ಕನ್ನಡದಲ್ಲಿ.
+> Explain Reinforcement Learning ಕನ್ನಡದಲ್ಲಿ.
 
 The response is generated in Kannada.
 
 Another example:
 
-> Kal ka study plan bana do.
+> Kal ka schedule dikha do.
 
 The assistant replies in Hindi.
 
 Example:
 
-> Explain Attention ಕನ್ನಡದಲ್ಲಿ with English technical words.
+> Explain Thermodynamics ಕನ್ನಡದಲ್ಲಿ English technical words jotege.
 
 The assistant naturally mixes languages.
 
@@ -307,7 +307,7 @@ Recommendations:
 
 - Revise Attention Mechanism
 - Practice LeetCode today
-- Continue AI-900 course
+- Continue AI course
 
 ---
 
@@ -325,15 +325,15 @@ Deep Learning
 
 10:45–12:00
 
-NLP
+Internship
 
 02:00–03:00
 
-DSA Practice
+LeetCode Practice
 
 04:00–05:00
 
-AI Concierge Project
+Cryptography Project
 
 The plan is customized using:
 
