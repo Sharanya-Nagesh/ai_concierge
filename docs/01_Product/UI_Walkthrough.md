@@ -271,7 +271,7 @@ Logout
 
 Main Area
 
-Good Evening, Sharanya!
+Good Evening, ABC!
 
 Continue Learning
 
@@ -513,7 +513,7 @@ Allow users to manage stored memories.
 ```
 Career Goal
 
-Preparing for AI Interviews
+Preparing for HR Interviews
 
 Edit
 
@@ -551,13 +551,13 @@ Search Memory
 ```
 Today's Plan
 
-9:00 NLP
+9:00 Psychotherapy
 
 10:30 Break
 
-11:00 DSA
+11:00 Children's Psychology
 
-2:00 AI Concierge
+2:00 Neuroscience
 
 4:00 Revision
 ```
@@ -583,11 +583,11 @@ Cards
 ```
 Recommended Today
 
-Revise Transformers
+Revise Endocrinology
 
-Continue Azure AI-900
+Continue Oncology
 
-Practice DSA
+Practice Neurosurgery
 
 Read Uploaded Paper
 ```
@@ -609,7 +609,7 @@ Older
 Each item
 
 ```
-Transformer Discussion
+Bloom's Taxonomy Discussion
 
 Rename
 
