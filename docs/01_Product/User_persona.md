@@ -70,7 +70,7 @@ These personas are fictional but represent realistic groups of users.
 
 > "Summarize Unit 3."
 
-> "Explain Attention Mechanism in Kannada."
+> "Explain Confirmation Bias in Kannada."
 
 > "Create a study plan for next week."
 
@@ -121,7 +121,7 @@ These personas are fictional but represent realistic groups of users.
 
 ## Example Conversation
 
-> "Compare these two transformer papers."
+> "Compare these two Sports Nutrition papers."
 
 > "List the limitations mentioned."
 
@@ -180,7 +180,7 @@ These personas are fictional but represent realistic groups of users.
 
 ## Profile
 
-**Name:** Professor Meera
+**Name:** Prof. Meera
 
 **Occupation:** University Faculty
 
