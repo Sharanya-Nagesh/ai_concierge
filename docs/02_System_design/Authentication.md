@@ -132,8 +132,8 @@ Return Success
 
 ### Name
 
-- Minimum 2 characters
-- Maximum 100 characters
+- Minimum 3 characters
+- Maximum 16 characters
 
 ---
 
