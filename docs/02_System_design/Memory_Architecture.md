@@ -95,9 +95,9 @@ Remembers significant past events.
 
 Examples:
 
-- Completed AI-900 certification
+- Completed Tableau certification
 - Uploaded a research paper
-- Finished MLOps roadmap
+- Finished Operating system roadmap
 
 ---
 
@@ -107,9 +107,9 @@ Stores factual knowledge extracted from user interactions.
 
 Examples:
 
-- User prefers Python
+- User prefers Java
 - User likes concise explanations
-- User studies NLP
+- User studies Computer networking 
 
 ---
 
