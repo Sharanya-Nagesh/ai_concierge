@@ -293,8 +293,8 @@ Updates editable user profile fields.
 
 ```json
 {
-    "full_name": "Sharanya N",
-    "email": "sharanya@example.com"
+    "full_name": "XYZ Sharma",
+    "email": "xyz@example.com"
 }
 ```
 
@@ -317,8 +317,8 @@ Updates editable user profile fields.
     "success": true,
     "message": "Profile updated successfully.",
     "data": {
-        "full_name": "Sharanya N",
-        "email": "sharanya@example.com"
+        "full_name": "MGS Iyengar",
+        "email": "mgs@example.com"
     }
 }
 ```
@@ -434,7 +434,7 @@ PATCH /users/preferences
     "preferred_language": "Hindi",
     "response_style": "Concise",
     "theme": "Light",
-    "timezone": "Asia/Kolkata"
+    "timezone": "Asia/Dubai"
 }
 ```
 
