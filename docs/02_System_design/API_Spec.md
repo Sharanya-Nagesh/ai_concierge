@@ -240,8 +240,8 @@ None
   "success": true,
   "data": {
     "id": "b2f79c9d-45e7-41c1-8db6-37f4b9d8f98e",
-    "full_name": "Sharanya N",
-    "email": "sharanya@example.com",
+    "full_name": "ABC Agarwal",
+    "email": "abc@example.com",
     "role": "user",
     "created_at": "2026-07-22T10:15:20Z"
   }
