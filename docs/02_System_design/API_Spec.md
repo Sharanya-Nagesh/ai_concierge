@@ -717,7 +717,7 @@ GET /conversations?page=1&limit=20
         },
         {
             "id": "conv_02",
-            "title": "Azure AI-900",
+            "title": "Planning my road trip",
             "last_message_at": "2026-08-01T12:10:50Z"
         }
     ]
@@ -890,7 +890,7 @@ Sends a user message to the AI assistant.
 
 ```json
 {
-    "message": "Explain Retrieval-Augmented Generation.",
+    "message": "Explain Assets and liabilities",
     "language": "English"
 }
 ```
@@ -1197,7 +1197,7 @@ Uploads a document for indexing.
     "message": "Document uploaded successfully.",
     "data": {
         "document_id": "doc_001",
-        "filename": "Transformers.pdf",
+        "filename": "My_Notes.pdf",
         "status": "processing"
     }
 }
@@ -1273,13 +1273,13 @@ GET /documents
     "data": [
         {
             "document_id": "doc_001",
-            "filename": "Transformers.pdf",
+            "filename": Chapter1.pdf",
             "status": "indexed",
             "uploaded_at": "2026-08-01T09:20:00Z"
         },
         {
             "document_id": "doc_002",
-            "filename": "Attention.pdf",
+            "filename": "Chapter2.pdf",
             "status": "processing",
             "uploaded_at": "2026-08-01T09:30:00Z"
         }
@@ -1310,7 +1310,7 @@ Returns metadata for a document.
     "success": true,
     "data": {
         "document_id": "doc_001",
-        "filename": "Transformers.pdf",
+        "filename": "Chapter1.pdf",
         "file_size": 3456789,
         "page_count": 245,
         "status": "indexed",
@@ -1457,7 +1457,7 @@ Performs semantic similarity search across uploaded documents.
     "success": true,
     "data": [
         {
-            "document": "Transformers.pdf",
+            "document":Chapter1.pdf",
             "page": 32,
             "score": 0.94,
             "chunk": "Self-attention computes..."
