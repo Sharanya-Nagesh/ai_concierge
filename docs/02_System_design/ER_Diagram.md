@@ -228,13 +228,13 @@ One user may have multiple conversations.
 Example
 
 ```
-Sharanya
+Aruna
 
-├── NLP Discussion
+├── Dietician cost
 
-├── Azure AI-900
+├── "Nutrition for new mothers" course
 
-├── AI Concierge Project
+├── Strength training exercises for elder people
 ```
 
 ---
