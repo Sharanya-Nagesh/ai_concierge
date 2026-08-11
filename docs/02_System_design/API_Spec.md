@@ -1457,7 +1457,7 @@ Performs semantic similarity search across uploaded documents.
     "success": true,
     "data": [
         {
-            "document":Chapter1.pdf",
+            "document":"Chapter1.pdf",
             "page": 32,
             "score": 0.94,
             "chunk": "Self-attention computes..."
@@ -1534,7 +1534,7 @@ Returns indexing progress.
         "status": "embedding",
         "progress": 72
     }
-}
+
 ```
 
 Possible Status Values
@@ -1718,7 +1718,7 @@ Returns a specific memory.
     "data": {
         "memory_id": "mem_001",
         "category": "career",
-        "memory_text": "User wants to become an NLP Engineer.",
+        "memory_text": "User wants to become a Designer.",
         "importance_score": 0.98
     }
 }
@@ -1751,7 +1751,7 @@ Creates a new long-term memory.
 ```json
 {
     "category": "career",
-    "memory_text": "User is preparing for Azure AI-900."
+    "memory_text": "User is preparing for DevOps."
 }
 ```
 
@@ -1780,7 +1780,7 @@ PATCH /memories/{memory_id}
 
 ```json
 {
-    "memory_text": "User completed Azure AI-900 certification."
+    "memory_text": "User completed 6 months fellowship."
 }
 ```
 
@@ -1854,7 +1854,7 @@ Performs semantic similarity search over stored memories.
     "data": [
         {
             "memory_id": "mem_001",
-            "memory_text": "User is preparing for Azure AI-900.",
+            "memory_text": "User is preparing for DevOps.",
             "score": 0.95
         }
     ]
@@ -2030,7 +2030,7 @@ Creates a new planner task.
 
 ```json
 {
-    "title": "Complete Azure AI-900 Course",
+    "title": "Complete Thermodynamics Course",
     "description": "Finish all modules and practice exams.",
     "priority": "High",
     "due_date": "2026-08-30"
@@ -2088,7 +2088,7 @@ GET /planner/tasks
     "data": [
         {
             "task_id": "task_001",
-            "title": "Complete Azure AI-900",
+            "title": "Complete Azure certification",
             "status": "In Progress",
             "priority": "High",
             "due_date": "2026-08-30"
@@ -2116,7 +2116,7 @@ GET /planner/tasks/{task_id}
     "success": true,
     "data": {
         "task_id": "task_001",
-        "title": "Complete Azure AI-900",
+        "title": "Complete Linguistics course",
         "description": "Finish all modules.",
         "status": "Pending",
         "priority": "High",
@@ -2139,7 +2139,7 @@ PATCH /planner/tasks/{task_id}
 
 ```json
 {
-    "title": "Complete AI-900",
+    "title": "Complete CS229",
     "priority": "Medium",
     "due_date": "2026-09-05"
 }
@@ -2237,7 +2237,7 @@ Generates a personalized study roadmap using AI.
 
 ```json
 {
-    "goal": "Become an NLP Engineer",
+    "goal": "Become an SRE Engineer",
     "duration_weeks": 16,
     "hours_per_day": 3
 }
@@ -2285,7 +2285,7 @@ Returns tasks grouped by week.
         "week": "2026-W31",
         "tasks": [
             {
-                "title": "Finish RAG Module",
+                "title": "Finish DevOps Module",
                 "status": "Pending"
             }
         ]
@@ -2567,7 +2567,7 @@ Determines which agent(s) should handle the request.
 User Message
 
 ```
-Summarize my uploaded NLP notes.
+Summarize my uploaded OS notes.
 ```
 
 Selected Agent
@@ -3096,8 +3096,8 @@ GET /recommendations?category=learning&limit=5
         {
             "recommendation_id": "rec_001",
             "category": "learning",
-            "title": "Study Attention Mechanism",
-            "description": "Based on your recent conversations, this topic will strengthen your understanding of Transformers.",
+            "title": "Study Mechanism of action of local anesthetics",
+            "description": "Based on your recent conversations, this topic will strengthen your understanding of local anesthetics.",
             "priority": "High",
             "confidence": 0.94
         }
@@ -3130,12 +3130,12 @@ Returns AI-generated learning suggestions.
     "success": true,
     "data": [
         {
-            "title": "Complete Azure AI-900",
+            "title": "Complete DBMS certification",
             "reason": "You have already completed 75% of the syllabus."
         },
         {
             "title": "Start MLOps",
-            "reason": "Recommended after AI-900."
+            "reason": "Recommended after DBMS."
         }
     ]
 }
