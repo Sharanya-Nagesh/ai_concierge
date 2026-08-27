@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
+from sqlalchemy import text, create_engine
 from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
@@ -18,3 +18,6 @@ SessionLocal = sessionmaker(
     autoflush=False,
     bind=engine
 )
+with engine.connect() as connection:
+    result = connection.execute(text("SELECT 1"))
+    print("Database connection successful:", result.scalar())
