@@ -38,7 +38,8 @@ class AuditLog(Base):
         nullable=True
     )
 
-    metadata: Mapped[dict | None] = mapped_column(
+    metadata_: Mapped[dict | None] = mapped_column(
+        "metadata"
         JSONB,
         nullable=True
     )
