@@ -3,8 +3,11 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.authorization import require_user_ownership
 from app.core.database import get_db
+from app.core.dependencies import get_current_user
 from app.models.memory import Memory
+from app.models.user import User
 from app.schemas.memory_schema import MemoryCreate, MemoryResponse
 from app.services.memory_service import MemoryService
 
@@ -23,7 +26,13 @@ router = APIRouter(
 def create_memory(
     memory_data: MemoryCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=memory_data.user_id,
+    )
+
     service = MemoryService(db)
 
     memory = Memory(
@@ -45,7 +54,13 @@ def create_memory(
 def get_user_memories(
     user_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=user_id,
+    )
+
     service = MemoryService(db)
 
     return service.get_user_memories(user_id)
@@ -58,6 +73,7 @@ def get_user_memories(
 def get_memory(
     memory_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     service = MemoryService(db)
 
@@ -68,6 +84,11 @@ def get_memory(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Memory not found",
         )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=memory.user_id,
+    )
 
     return memory
 
@@ -79,6 +100,7 @@ def get_memory(
 def delete_memory(
     memory_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     service = MemoryService(db)
 
@@ -89,5 +111,10 @@ def delete_memory(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Memory not found",
         )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=memory.user_id,
+    )
 
     service.delete_memory(memory)

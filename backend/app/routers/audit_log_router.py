@@ -3,8 +3,11 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.authorization import require_user_ownership
 from app.core.database import get_db
+from app.core.dependencies import get_current_user
 from app.models.audit_log import AuditLog
+from app.models.user import User
 from app.schemas.audit_log_schema import AuditLogCreate, AuditLogResponse
 from app.services.audit_log_service import AuditLogService
 
@@ -23,7 +26,14 @@ router = APIRouter(
 def create_audit_log(
     log_data: AuditLogCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    if log_data.user_id is not None:
+        require_user_ownership(
+            current_user_id=current_user.id,
+            requested_user_id=log_data.user_id,
+        )
+
     service = AuditLogService(db)
 
     audit_log = AuditLog(
@@ -44,7 +54,13 @@ def create_audit_log(
 def get_user_logs(
     user_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=user_id,
+    )
+
     service = AuditLogService(db)
 
     return service.get_user_logs(user_id)
@@ -57,6 +73,7 @@ def get_user_logs(
 def get_audit_log(
     audit_log_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     service = AuditLogService(db)
 
@@ -66,6 +83,12 @@ def get_audit_log(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Audit log not found",
+        )
+
+    if audit_log.user_id is not None:
+        require_user_ownership(
+            current_user_id=current_user.id,
+            requested_user_id=audit_log.user_id,
         )
 
     return audit_log

@@ -3,9 +3,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.authorization import require_user_ownership
 from app.core.database import get_db
+from app.core.dependencies import get_current_user
 from app.models.message import Message
+from app.models.user import User
 from app.schemas.message_schema import MessageCreate, MessageResponse
+from app.services.conversation_service import ConversationService
 from app.services.message_service import MessageService
 
 
@@ -23,8 +27,26 @@ router = APIRouter(
 def create_message(
     message_data: MessageCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    service = MessageService(db)
+    conversation_service = ConversationService(db)
+
+    conversation = conversation_service.get_conversation(
+        message_data.conversation_id
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Conversation not found",
+        )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=conversation.user_id,
+    )
+
+    message_service = MessageService(db)
 
     message = Message(
         conversation_id=message_data.conversation_id,
@@ -34,7 +56,7 @@ def create_message(
         tokens_used=message_data.tokens_used,
     )
 
-    return service.create_message(message)
+    return message_service.create_message(message)
 
 
 @router.get(
@@ -44,10 +66,30 @@ def create_message(
 def get_conversation_messages(
     conversation_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    service = MessageService(db)
+    conversation_service = ConversationService(db)
 
-    return service.get_conversation_messages(conversation_id)
+    conversation = conversation_service.get_conversation(
+        conversation_id
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Conversation not found",
+        )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=conversation.user_id,
+    )
+
+    message_service = MessageService(db)
+
+    return message_service.get_conversation_messages(
+        conversation_id
+    )
 
 
 @router.get(
@@ -57,16 +99,34 @@ def get_conversation_messages(
 def get_message(
     message_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    service = MessageService(db)
+    message_service = MessageService(db)
 
-    message = service.get_message(message_id)
+    message = message_service.get_message(message_id)
 
     if message is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Message not found",
         )
+
+    conversation_service = ConversationService(db)
+
+    conversation = conversation_service.get_conversation(
+        message.conversation_id
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Conversation not found",
+        )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=conversation.user_id,
+    )
 
     return message
 
@@ -78,10 +138,11 @@ def get_message(
 def delete_message(
     message_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    service = MessageService(db)
+    message_service = MessageService(db)
 
-    message = service.get_message(message_id)
+    message = message_service.get_message(message_id)
 
     if message is None:
         raise HTTPException(
@@ -89,4 +150,21 @@ def delete_message(
             detail="Message not found",
         )
 
-    service.delete_message(message)
+    conversation_service = ConversationService(db)
+
+    conversation = conversation_service.get_conversation(
+        message.conversation_id
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Conversation not found",
+        )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=conversation.user_id,
+    )
+
+    message_service.delete_message(message)

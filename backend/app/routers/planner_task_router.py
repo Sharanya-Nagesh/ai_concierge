@@ -3,8 +3,11 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.authorization import require_user_ownership
 from app.core.database import get_db
+from app.core.dependencies import get_current_user
 from app.models.planner_task import PlannerTask
+from app.models.user import User
 from app.schemas.planner_task_schema import (
     PlannerTaskCreate,
     PlannerTaskResponse,
@@ -26,7 +29,13 @@ router = APIRouter(
 def create_task(
     task_data: PlannerTaskCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=task_data.user_id,
+    )
+
     service = PlannerTaskService(db)
 
     task = PlannerTask(
@@ -48,7 +57,13 @@ def create_task(
 def get_user_tasks(
     user_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=user_id,
+    )
+
     service = PlannerTaskService(db)
 
     return service.get_user_tasks(user_id)
@@ -61,6 +76,7 @@ def get_user_tasks(
 def get_task(
     task_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     service = PlannerTaskService(db)
 
@@ -71,6 +87,11 @@ def get_task(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Planner task not found",
         )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=task.user_id,
+    )
 
     return task
 
@@ -82,6 +103,7 @@ def get_task(
 def delete_task(
     task_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     service = PlannerTaskService(db)
 
@@ -92,5 +114,10 @@ def delete_task(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Planner task not found",
         )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=task.user_id,
+    )
 
     service.delete_task(task)

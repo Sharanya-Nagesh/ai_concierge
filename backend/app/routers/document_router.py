@@ -3,8 +3,11 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.authorization import require_user_ownership
 from app.core.database import get_db
+from app.core.dependencies import get_current_user
 from app.models.document import Document
+from app.models.user import User
 from app.schemas.document_schema import DocumentCreate, DocumentResponse
 from app.services.document_service import DocumentService
 
@@ -23,7 +26,13 @@ router = APIRouter(
 def create_document(
     document_data: DocumentCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=document_data.user_id,
+    )
+
     service = DocumentService(db)
 
     document = Document(
@@ -47,7 +56,13 @@ def create_document(
 def get_user_documents(
     user_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=user_id,
+    )
+
     service = DocumentService(db)
 
     return service.get_user_documents(user_id)
@@ -60,6 +75,7 @@ def get_user_documents(
 def get_document(
     document_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     service = DocumentService(db)
 
@@ -70,6 +86,11 @@ def get_document(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found",
         )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=document.user_id,
+    )
 
     return document
 
@@ -81,6 +102,7 @@ def get_document(
 def delete_document(
     document_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     service = DocumentService(db)
 
@@ -91,5 +113,10 @@ def delete_document(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found",
         )
+
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=document.user_id,
+    )
 
     service.delete_document(document)

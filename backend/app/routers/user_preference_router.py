@@ -3,7 +3,10 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.authorization import require_user_ownership
 from app.core.database import get_db
+from app.core.dependencies import get_current_user
+from app.models.user import User
 from app.models.user_preference import UserPreference
 from app.schemas.user_preference_schema import (
     UserPreferenceCreate,
@@ -27,7 +30,13 @@ def create_preferences(
     user_id: UUID,
     preference_data: UserPreferenceCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=user_id,
+    )
+
     service = UserPreferenceService(db)
 
     if preference_data.user_id != user_id:
@@ -60,7 +69,13 @@ def create_preferences(
 def get_preferences(
     user_id: UUID,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    require_user_ownership(
+        current_user_id=current_user.id,
+        requested_user_id=user_id,
+    )
+
     service = UserPreferenceService(db)
 
     preferences = service.get_preferences(user_id)
