@@ -1,4 +1,4 @@
-import pytest
+import pytest  # type: ignore[reportMissingImports]
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
@@ -14,14 +14,24 @@ def client():
     db = Session(bind=connection)
 
     def override_get_db():
-        yield db
+        nested_transaction = db.begin_nested()
+
+        try:
+            yield db
+            nested_transaction.commit()
+
+        except Exception:
+            nested_transaction.rollback()
+            raise
 
     app.dependency_overrides[get_db] = override_get_db
 
-    with TestClient(app) as test_client:
-        yield test_client
+    try:
+        with TestClient(app) as test_client:
+            yield test_client
 
-    app.dependency_overrides.clear()
-    db.close()
-    transaction.rollback()
-    connection.close()
+    finally:
+        app.dependency_overrides.clear()
+        db.close()
+        transaction.rollback()
+        connection.close()

@@ -6,6 +6,12 @@ from app.core.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.chat_schema import ChatRequest, ChatResponse
 from app.services.chat_service import ChatService
+import logging
+
+from app.services.llm_provider import LLMProviderError
+
+
+logger = logging.getLogger(__name__)
 
 
 router = APIRouter(
@@ -53,6 +59,14 @@ def chat(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_message,
+        )
+    
+    except LLMProviderError:
+        logger.exception("LLM provider failed during chat")
+
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="The AI assistant is temporarily unavailable. Please try again.",
         )
 
     return ChatResponse(

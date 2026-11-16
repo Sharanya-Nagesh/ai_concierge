@@ -1,6 +1,13 @@
 from uuid import uuid4
 
 from fastapi.testclient import TestClient
+from app.services.llm_provider import LLMProviderError
+from app.services.llm_service import LLMService
+from app.services.chat_service import ChatService
+from app.models.message import Message, MessageSender
+
+
+
 
 
 def create_test_user(client: TestClient):
@@ -183,6 +190,134 @@ def test_chat_rejects_message_over_5000_characters(
 
     assert response.status_code == 422
 
+def test_new_chat_llm_failure_rolls_back(
+    client,
+    monkeypatch,
+):
+    user, headers = create_test_user(client)
+
+    def mock_failure(self, user_message):
+        raise LLMProviderError("Simulated LLM failure")
+
+    monkeypatch.setattr(
+        LLMService,
+        "generate_response",
+        mock_failure,
+    )
+
+    response = client.post(
+        "/chat/",
+        headers=headers,
+        json={"message": "Hello"},
+    )
+
+    assert response.status_code == 503
+
+    # Verify that no conversation was persisted
+    conversations_response = client.get(
+        f"/conversations/user/{user['id']}",
+        headers=headers,
+    )
+
+    assert conversations_response.status_code == 200
+    assert conversations_response.json() == []
+
+def test_existing_chat_llm_failure_preserves_history(
+    client,
+    monkeypatch,
+):
+    user, headers = create_test_user(client)
+
+    # First create a successful conversation
+    initial_response = client.post(
+        "/chat/",
+        headers=headers,
+        json={"message": "Hello"},
+    )
+
+    assert initial_response.status_code == 200
+
+    conversation_id = initial_response.json()["conversation_id"]
+
+    def mock_failure(self, user_message):
+        raise LLMProviderError("Simulated LLM failure")
+
+    monkeypatch.setattr(
+        LLMService,
+        "generate_response",
+        mock_failure,
+    )
+
+    # Attempt to continue the conversation
+    failed_response = client.post(
+        "/chat/",
+        headers=headers,
+        json={
+            "conversation_id": conversation_id,
+            "message": "Explain RAG",
+        },
+    )
+
+    assert failed_response.status_code == 503
+
+    # Verify that the original two messages remain
+    messages_response = client.get(
+        f"/messages/conversation/{conversation_id}",
+        headers=headers,
+    )
+
+    assert messages_response.status_code == 200
+
+    messages = messages_response.json()
+
+    assert len(messages) == 2
+    assert messages[0]["content"] == "Hello"
+    assert messages[1]["sender"] == "assistant"
+
+def test_unauthorized_chat_does_not_call_llm(
+    client,
+    monkeypatch,
+):
+    user_a, headers_a = create_test_user(client)
+    user_b, headers_b = create_test_user(client)
+
+    # User B creates a conversation
+    initial_response = client.post(
+        "/chat/",
+        headers=headers_b,
+        json={"message": "My private conversation"},
+    )
+
+    assert initial_response.status_code == 200
+
+    conversation_id = initial_response.json()["conversation_id"]
+
+    # Track whether the LLM is invoked
+    calls = {"count": 0}
+
+    def mock_generate(self, user_message):
+        calls["count"] += 1
+        return "Mock response"
+
+    monkeypatch.setattr(
+        LLMService,
+        "generate_response",
+        mock_generate,
+    )
+
+    # User A attempts to access User B's conversation
+    response = client.post(
+        "/chat/",
+        headers=headers_a,
+        json={
+            "conversation_id": conversation_id,
+            "message": "Unauthorized access",
+        },
+    )
+
+    assert response.status_code == 403
+    assert calls["count"] == 0
+
 def test_user_cannot_continue_another_users_conversation(
     client: TestClient,
 ):
@@ -287,3 +422,12 @@ def test_chat_preserves_conversation_history(client: TestClient):
     assert messages[4]["content"] == "Explain it simply."
 
     assert messages[5]["sender"] == "assistant"
+
+def test_context_window_limits_messages(client):
+    user, headers = create_test_user(client)
+
+    service = ChatService(
+        db=next(
+            app.dependency_overrides[get_db]()
+        )
+    )
