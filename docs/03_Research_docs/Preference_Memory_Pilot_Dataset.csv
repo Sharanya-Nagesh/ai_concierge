@@ -1,0 +1,71 @@
+﻿scenario_id,category,conversation_history,test_query,preference_key,expected_active_value,expected_scope,instruction_type,superseded_values,expired_values,expected_system_behaviour,stale_memory_risk_probe,baseline_response,proposed_response,baseline_retrieved_memories,proposed_retrieved_memories,baseline_stale_memory_influenced,proposed_stale_memory_influenced,baseline_current_preference_followed,proposed_current_preference_followed,baseline_update_correct,proposed_update_correct,annotator_notes
+ST01,stable_preference,I prefer detailed explanations.,Explain recursion.,response_style,detailed,global,stable,,,Apply the active global preference: detailed.,No,,,,,,,,,,,
+ST02,stable_preference,Please use concise answers in general.,What is an API?,response_style,concise,global,stable,,,Apply the active global preference: concise.,No,,,,,,,,,,,
+ST03,stable_preference,"When teaching me, include a simple example.",Explain binary search.,response_style,include_example,global,stable,,,Apply the active global preference: include_example.,No,,,,,,,,,,,
+ST04,stable_preference,I prefer Python code examples.,Show me how to read a CSV file.,response_style,Python,global,stable,,,Apply the active global preference: Python.,No,,,,,,,,,,,
+ST05,stable_preference,Use bullet points when listing steps.,How do I prepare for an interview?,response_style,bullet_points,global,stable,,,Apply the active global preference: bullet_points.,No,,,,,,,,,,,
+ST06,stable_preference,Avoid unnecessary jargon in explanations.,Explain gradient descent.,response_style,plain_language,global,stable,,,Apply the active global preference: plain_language.,No,,,,,,,,,,,
+ST07,stable_preference,"When comparing options, use a table.",Compare SQL and NoSQL databases.,response_style,comparison_table,global,stable,,,Apply the active global preference: comparison_table.,No,,,,,,,,,,,
+ST08,stable_preference,I prefer explanations before code.,Show a stack implementation.,response_style,explanation_before_code,global,stable,,,Apply the active global preference: explanation_before_code.,No,,,,,,,,,,,
+ST09,stable_preference,Use metric units in examples.,Give an example of a distance calculation.,response_style,metric_units,global,stable,,,Apply the active global preference: metric_units.,No,,,,,,,,,,,
+ST10,stable_preference,"For technical topics, explain the intuition first.",Explain attention in transformers.,response_style,intuition_first,global,stable,,,Apply the active global preference: intuition_first.,No,,,,,,,,,,,
+UP01,explicit_update,"User: I prefer short explanations.
+User: From now on, give detailed explanations.",Explain overfitting.,detail_level,detailed,global,explicit_replacement,concise,,Apply detailed; treat concise as superseded for this preference key.,Yes,,,,,,,,,,,
+UP02,explicit_update,"User: Use Python for code examples.
+User: Please use Java for code examples from now on.",Show a binary search implementation.,programming_language,Java,global,explicit_replacement,Python,,Apply Java; treat Python as superseded for this preference key.,Yes,,,,,,,,,,,
+UP03,explicit_update,"User: Use bullet points in answers.
+User: Stop using bullet points; use short paragraphs instead.",Explain REST APIs.,format,short_paragraphs,global,explicit_replacement,bullet_points,,Apply short_paragraphs; treat bullet_points as superseded for this preference key.,Yes,,,,,,,,,,,
+UP04,explicit_update,"User: Call me by my first name.
+User: Actually, do not use my name when replying.",Can you help me plan my day?,addressing_style,do_not_use_name,global,explicit_replacement,use_first_name,,Apply do_not_use_name; treat use_first_name as superseded for this preference key.,Yes,,,,,,,,,,,
+UP05,explicit_update,"User: Give hints before revealing solutions.
+User: For future coding questions, show the complete solution directly.",Solve two sum.,solution_style,complete_solution,global,explicit_replacement,hints_first,,Apply complete_solution; treat hints_first as superseded for this preference key.,Yes,,,,,,,,,,,
+UP06,explicit_update,"User: Use simple analogies.
+User: Avoid analogies; use precise technical explanations.",Explain database indexing.,explanation_style,precise_technical,global,explicit_replacement,analogies,,Apply precise_technical; treat analogies as superseded for this preference key.,Yes,,,,,,,,,,,
+UP07,explicit_update,"User: Use markdown tables for comparisons.
+User: Please use bullet lists for comparisons instead.",Compare REST and GraphQL.,comparison_format,bullet_list,global,explicit_replacement,markdown_table,,Apply bullet_list; treat markdown_table as superseded for this preference key.,Yes,,,,,,,,,,,
+UP08,explicit_update,"User: Keep answers under 100 words.
+User: I no longer need a strict word limit; explain fully.",Explain regularization.,response_length,full_explanation,global,explicit_replacement,under_100_words,,Apply full_explanation; treat under_100_words as superseded for this preference key.,Yes,,,,,,,,,,,
+UP09,explicit_update,"User: Assume I am a beginner.
+User: You can assume I know the fundamentals now.",Explain backpropagation.,knowledge_level,intermediate,global,explicit_replacement,beginner,,Apply intermediate; treat beginner as superseded for this preference key.,Yes,,,,,,,,,,,
+UP10,explicit_update,"User: Use examples from finance.
+User: Use examples from healthcare instead.",Explain classification.,example_domain,healthcare,global,explicit_replacement,finance,,Apply healthcare; treat finance as superseded for this preference key.,Yes,,,,,,,,,,,
+CF01,ambiguous_conflict,"I prefer concise answers.
+Later: I prefer detailed answers.",Explain normalization.,detail_level,ambiguous,global,ambiguous_conflict,,,The user gave conflicting values without an explicit replacement cue or clear time/scope. Ask which preference should apply; do not silently choose.,No,,,,,,,,,,,
+CF02,ambiguous_conflict,"For explanations, use simple language.
+Later: Use highly technical language.",Explain an API gateway.,language_complexity,ambiguous,global,ambiguous_conflict,,,Ask whether the later instruction replaces the earlier global preference or applies only to a particular context.,No,,,,,,,,,,,
+CF03,ambiguous_conflict,"Use Python examples.
+Later: Use JavaScript examples.",Show a sorting example.,programming_language,ambiguous,global,ambiguous_conflict,,,Ask which language is preferred for this request or whether the preference has changed.,No,,,,,,,,,,,
+CF04,ambiguous_conflict,"Keep answers short.
+Later: Include all relevant details.",Explain TCP.,response_length,ambiguous,global,ambiguous_conflict,,,Clarify the desired balance or ask whether the later instruction supersedes the earlier one.,No,,,,,,,,,,,
+CF05,ambiguous_conflict,"Use tables for comparisons.
+Later: Avoid tables.",Compare REST and GraphQL.,comparison_format,ambiguous,global,ambiguous_conflict,,,Do not assume a permanent update; clarify the intended format.,No,,,,,,,,,,,
+CF06,ambiguous_conflict,"Use examples from education.
+Later: Use examples from business.",Explain clustering.,example_domain,ambiguous,global,ambiguous_conflict,,,Clarify whether business examples replace the earlier preference globally.,No,,,,,,,,,,,
+CF07,ambiguous_conflict,"Give hints first.
+Later: Show complete answers.",Solve a dynamic programming problem.,solution_style,ambiguous,global,ambiguous_conflict,,,Clarify whether the user wants hints or a full solution for this problem.,No,,,,,,,,,,,
+CF08,ambiguous_conflict,"Address me informally.
+Later: Use formal language.",Draft a professional message.,tone,ambiguous,global,ambiguous_conflict,,,"The current task may imply a formal tone, but do not infer a permanent preference update.",No,,,,,,,,,,,
+CF09,ambiguous_conflict,"Use English.
+Later: Use Kannada.",Explain photosynthesis.,response_language,ambiguous,global,ambiguous_conflict,,,Ask which language to use for this request; do not infer a permanent change.,No,,,,,,,,,,,
+CF10,ambiguous_conflict,"Prefer detailed technical explanations.
+Later: Prefer concise technical explanations.",Explain indexing.,technical_detail,ambiguous,global,ambiguous_conflict,,,Clarify which preference is current because no explicit update or scope was provided.,No,,,,,,,,,,,
+TM01,temporary_preference,"I usually prefer detailed answers. For this session, keep answers short.",Explain caching.,response_length,concise,this_session,temporary_override,,detailed,Apply concise only within scope 'this_session'; retain the usual preference detailed outside that scope.,No,,,,,,,,,,,
+TM02,temporary_preference,"Normally use Python examples. For this exercise, use Java.",Show a queue implementation.,programming_language,Java,this_exercise,temporary_override,,Python,Apply Java only within scope 'this_exercise'; retain the usual preference Python outside that scope.,No,,,,,,,,,,,
+TM03,temporary_preference,I prefer English. Please answer the next question in Kannada.,Explain photosynthesis.,response_language,Kannada,next_question,temporary_override,,English,Apply Kannada only within scope 'next_question'; retain the usual preference English outside that scope.,No,,,,,,,,,,,
+TM04,temporary_preference,"Usually include examples. In this answer only, do not include one.",Define overfitting.,include_example,no_example,this_answer,temporary_override,,include_example,Apply no_example only within scope 'this_answer'; retain the usual preference include_example outside that scope.,No,,,,,,,,,,,
+TM05,temporary_preference,"I prefer detailed explanations. Today, keep things concise.",Explain an API.,response_length,concise,today,temporary_override,,detailed,Apply concise only within scope 'today'; retain the usual preference detailed outside that scope.,No,,,,,,,,,,,
+TM06,temporary_preference,"Use a formal tone generally. For this draft, make it friendly.",Write a thank-you note.,tone,friendly,this_draft,temporary_override,,formal,Apply friendly only within scope 'this_draft'; retain the usual preference formal outside that scope.,No,,,,,,,,,,,
+TM07,temporary_preference,"Normally use tables. For this comparison, use bullets.",Compare arrays and linked lists.,comparison_format,bullet_list,this_comparison,temporary_override,,table,Apply bullet_list only within scope 'this_comparison'; retain the usual preference table outside that scope.,No,,,,,,,,,,,
+TM08,temporary_preference,"I usually want hints first. For this problem, give the full solution.",Solve a palindrome problem.,solution_style,complete_solution,this_problem,temporary_override,,hints_first,Apply complete_solution only within scope 'this_problem'; retain the usual preference hints_first outside that scope.,No,,,,,,,,,,,
+TM09,temporary_preference,"Use simple language generally. For this technical note, use precise terminology.",Define ACID properties.,language_complexity,technical,this_note,temporary_override,,simple,Apply technical only within scope 'this_note'; retain the usual preference simple outside that scope.,No,,,,,,,,,,,
+TM10,temporary_preference,"I usually prefer metric units. For this US recipe, show Fahrenheit temperatures.",Explain the baking temperature.,unit_preference,Fahrenheit,this_recipe,temporary_override,,Celsius,Apply Fahrenheit only within scope 'this_recipe'; retain the usual preference Celsius outside that scope.,No,,,,,,,,,,,
+SC01,scope_specific_preference,"For NLP topics, give detailed explanations. For general topics, keep answers concise.",Explain tokenization in NLP.,detail_level,detailed,NLP,scope_specific,,,Apply detailed only in scope 'NLP'; do not apply it outside that scope.,No,,,,,,,,,,,
+SC02,scope_specific_preference,"For coding questions, use Python. For frontend examples, use JavaScript.",Show a function to validate an email in a browser.,programming_language,JavaScript,frontend,scope_specific,,,Apply JavaScript only in scope 'frontend'; do not apply it outside that scope.,No,,,,,,,,,,,
+SC03,scope_specific_preference,"For research summaries, include limitations. For quick definitions, keep it brief.",Summarize this research paper.,include_limitations,yes,research_summary,scope_specific,,,Apply yes only in scope 'research_summary'; do not apply it outside that scope.,No,,,,,,,,,,,
+SC04,scope_specific_preference,"For interview preparation, explain time complexity. For casual questions, no need.",Explain merge sort for an interview.,include_complexity,yes,interview_preparation,scope_specific,,,Apply yes only in scope 'interview_preparation'; do not apply it outside that scope.,No,,,,,,,,,,,
+SC05,scope_specific_preference,"For Sanskrit topics, include transliteration. For other topics, use normal script only.",Explain a Sanskrit grammatical term.,include_transliteration,yes,Sanskrit,scope_specific,,,Apply yes only in scope 'Sanskrit'; do not apply it outside that scope.,No,,,,,,,,,,,
+SC06,scope_specific_preference,"For planning tasks, use checklists. For conceptual explanations, use prose.",Create a weekly study plan.,format,checklist,planning,scope_specific,,,Apply checklist only in scope 'planning'; do not apply it outside that scope.,No,,,,,,,,,,,
+SC07,scope_specific_preference,"For database questions, use SQL examples. For general programming, use Python.",Write a query to find duplicate rows.,programming_language,SQL,database,scope_specific,,,Apply SQL only in scope 'database'; do not apply it outside that scope.,No,,,,,,,,,,,
+SC08,scope_specific_preference,"For beginner topics, use analogies. For advanced topics, use formal definitions.",Explain eigenvectors at an advanced level.,explanation_style,formal_definition,advanced_topics,scope_specific,,,Apply formal_definition only in scope 'advanced_topics'; do not apply it outside that scope.,No,,,,,,,,,,,
+SC09,scope_specific_preference,"For project documentation, use concise professional language. For learning, explain in detail.",Draft a project objective section.,tone_detail,concise_professional,project_documentation,scope_specific,,,Apply concise_professional only in scope 'project_documentation'; do not apply it outside that scope.,No,,,,,,,,,,,
+SC10,scope_specific_preference,"For comparisons, use a table. For step-by-step instructions, use numbered lists.",List the steps to deploy a FastAPI app.,format,numbered_list,step_by_step_instructions,scope_specific,,,Apply numbered_list only in scope 'step_by_step_instructions'; do not apply it outside that scope.,No,,,,,,,,,,,
