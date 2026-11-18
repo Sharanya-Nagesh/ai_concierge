@@ -16,7 +16,7 @@ from app.models.memory import Memory
 from app.models.document import Document
 from app.models.planner_task import PlannerTask
 from app.models.audit_log import AuditLog
-
+from app.models.preference_memory import PreferenceMemory
 
 # ---------------------------------------------------------
 # Load environment variables
